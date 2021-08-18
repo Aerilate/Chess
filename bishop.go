@@ -1,7 +1,13 @@
 package main
 
 type Bishop struct {
-	posn
+	PieceInfo
+}
+
+func NewBishop(p PieceInfo) *Bishop {
+	b := Bishop{}
+	b.PieceInfo = p
+	return &b
 }
 
 func (b Bishop) String() string {

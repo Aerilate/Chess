@@ -1,7 +1,13 @@
 package main
 
 type Pawn struct {
-	posn
+	PieceInfo
+}
+
+func NewPawn(p PieceInfo) *Pawn {
+	pw := Pawn{}
+	pw.PieceInfo = p
+	return &pw
 }
 
 func (p Pawn) String() string {

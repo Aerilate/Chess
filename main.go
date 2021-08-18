@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	b := New()
+	b := NewBoard()
 	fmt.Println(b)
 }

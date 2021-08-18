@@ -1,7 +1,13 @@
 package main
 
 type Knight struct {
-	posn
+	PieceInfo
+}
+
+func NewKnight(p PieceInfo) *Knight {
+	n := Knight{}
+	n.PieceInfo = p
+	return &n
 }
 
 func (k Knight) String() string {
