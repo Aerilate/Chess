@@ -56,12 +56,12 @@ func (v ViewController) start() {
 				fmt.Println("GAME OVER")
 				os.Exit(0)
 			} else if moveRegex.MatchString(in) {
-				a, _ := strconv.Atoi(string(in[1]))
-				b, _ := strconv.Atoi(string(in[2]))
-				src := Posn{a, b}
-				a, _ = strconv.Atoi(string(in[3]))
-				b, _ = strconv.Atoi(string(in[4]))
-				dest := Posn{a, b}
+				src := Posn{}
+				src.x, _ = strconv.Atoi(string(in[1]))
+				src.y, _ = strconv.Atoi(string(in[2]))
+				dest := Posn{}
+				dest.x, _ = strconv.Atoi(string(in[3]))
+				dest.y, _ = strconv.Atoi(string(in[4]))
 
 				err := v.move(src, dest)
 				if err == nil { // end turn

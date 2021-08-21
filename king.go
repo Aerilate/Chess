@@ -10,6 +10,10 @@ func NewKing(p PieceInfo) *King {
 	return &k
 }
 
+func (k *King) moveIsValid(p Posn) bool {
+	return true
+}
+
 func (k King) String() string {
 	return k.formatStr("k")
 }

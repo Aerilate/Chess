@@ -10,6 +10,10 @@ func NewKnight(p PieceInfo) *Knight {
 	return &n
 }
 
+func (n *Knight) moveIsValid(p Posn) bool {
+	return true
+}
+
 func (n Knight) String() string {
 	return n.formatStr("n")
 }

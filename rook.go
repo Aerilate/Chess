@@ -10,6 +10,10 @@ func NewRook(p PieceInfo) *Rook {
 	return &r
 }
 
+func (r *Rook) moveIsValid(p Posn) bool {
+	return true
+}
+
 func (r Rook) String() string {
 	return r.formatStr("r")
 }

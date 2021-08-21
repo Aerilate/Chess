@@ -10,6 +10,10 @@ func NewQueen(p PieceInfo) *Queen {
 	return &q
 }
 
+func (q *Queen) moveIsValid(p Posn) bool {
+	return true
+}
+
 func (q Queen) String() string {
 	return q.formatStr("q")
 }
