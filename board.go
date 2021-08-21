@@ -1,8 +1,6 @@
 package main
 
 const BoardSize = 8
-const Player1 = 1
-const Player2 = 2
 
 type Board struct {
 	board [BoardSize][BoardSize]piece
@@ -42,15 +40,15 @@ func NewBoard() *Board {
 	return &b
 }
 
-func addBorder(str *string) {
-	*str += "O"
-	for i := 0; i < BoardSize*2-1; i++ {
-		*str += "="
-	}
-	*str += "O\n"
-}
-
 func (b Board) String() string {
+	addBorder := func(str *string) {
+		*str += "O"
+		for i := 0; i < BoardSize*2-1; i++ {
+			*str += "="
+		}
+		*str += "O\n"
+	}
+
 	str := ""
 	addBorder(&str)
 	for _, row := range b.board {
