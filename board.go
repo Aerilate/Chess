@@ -3,13 +3,15 @@ package main
 const BoardSize = 8
 
 type Board struct {
-	board [BoardSize][BoardSize]piece
+	board [][]piece
 }
 
 func NewBoard() *Board {
 	b := Board{}
+	b.board = make([][]piece, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
+		b.board[i] = make([]piece, BoardSize, BoardSize)
 		for j := 0; j < BoardSize; j++ {
 			slot := &b.board[i][j]
 			player := Player1
