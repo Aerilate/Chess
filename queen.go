@@ -11,5 +11,5 @@ func NewQueen(p PieceInfo) *Queen {
 }
 
 func (q Queen) String() string {
-	return "q"
+	return q.formatStr("q")
 }

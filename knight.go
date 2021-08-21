@@ -10,6 +10,6 @@ func NewKnight(p PieceInfo) *Knight {
 	return &n
 }
 
-func (k Knight) String() string {
-	return "n"
+func (n Knight) String() string {
+	return n.formatStr("n")
 }

@@ -11,5 +11,5 @@ func NewPawn(p PieceInfo) *Pawn {
 }
 
 func (p Pawn) String() string {
-	return "p"
+	return p.formatStr("p")
 }

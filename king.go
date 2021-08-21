@@ -11,5 +11,5 @@ func NewKing(p PieceInfo) *King {
 }
 
 func (k King) String() string {
-	return "k"
+	return k.formatStr("k")
 }

@@ -11,5 +11,5 @@ func NewRook(p PieceInfo) *Rook {
 }
 
 func (r Rook) String() string {
-	return "r"
+	return r.formatStr("r")
 }

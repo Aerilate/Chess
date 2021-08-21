@@ -11,5 +11,5 @@ func NewBishop(p PieceInfo) *Bishop {
 }
 
 func (b Bishop) String() string {
-	return "b"
+	return b.formatStr("b")
 }
