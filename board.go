@@ -3,15 +3,15 @@ package main
 const BoardSize = 8
 
 type Board struct {
-	board [][]piece
+	board [][]*Piece
 }
 
 func NewBoard() *Board {
 	b := Board{}
-	b.board = make([][]piece, BoardSize, BoardSize)
+	b.board = make([][]*Piece, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
-		b.board[i] = make([]piece, BoardSize, BoardSize)
+		b.board[i] = make([]*Piece, BoardSize, BoardSize)
 		for j := 0; j < BoardSize; j++ {
 			slot := &b.board[i][j]
 			player := Player1
@@ -20,26 +20,30 @@ func NewBoard() *Board {
 			}
 
 			if i == 0 || i == 7 {
-				pInfo := NewPInfo(player, i, j)
+				posn := Posn{i, j}
 				switch j {
 				case 0, 7:
-					*slot = NewRook(pInfo)
+					*slot = &Piece{rook, player, posn}
 				case 1, 6:
-					*slot = NewKnight(pInfo)
+					*slot = &Piece{knight, player, posn}
 				case 2, 5:
-					*slot = NewBishop(pInfo)
+					*slot = &Piece{bishop, player, posn}
 				case 3:
-					*slot = NewQueen(pInfo)
+					*slot = &Piece{queen, player, posn}
 				case 4:
-					*slot = NewKing(pInfo)
+					*slot = &Piece{king, player, posn}
 				}
 			} else if i == 1 || i == 6 {
-				pInfo := NewPInfo(player, i, j)
-				*slot = NewPawn(pInfo)
+				posn := Posn{i, j}
+				*slot = &Piece{pawn, player, posn}
 			}
 		}
 	}
 	return &b
+}
+
+func (b *Board) at(p Posn) **Piece {
+	return &b.board[p.x][p.y]
 }
 
 func (b Board) String() string {

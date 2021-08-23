@@ -23,17 +23,24 @@ func moveInBounds(p Posn) bool {
 
 func (v ViewController) move(src Posn, dest Posn) error {
 	if !moveInBounds(src) {
-		return InvalidMove{"Coordinate " + src.String() + " is out of range!"}
+		return InvalidMove{"Source coordinate " + src.String() + " is out of range!"}
 	} else if !moveInBounds(dest) {
-		return InvalidMove{"Coordinate " + dest.String() + " is out of range!"}
+		return InvalidMove{"Destination coordinate " + dest.String() + " is out of range!"}
+	} else if src.equals(dest) {
+		return InvalidMove{"Source and destination coordinates can't be the same!"}
 	}
 
-	if v.board[src.x][src.y] == nil {
+	piece := *v.at(src)
+	if piece == nil {
 		return InvalidMove{"Coordinate " + src.String() + " has no piece!"}
 	}
+	err := piece.checkMove(&v, dest)
+	if err != nil {
+		return err
+	}
 
-	v.board[dest.x][dest.y] = v.board[src.x][src.y]
-	v.board[src.x][src.y] = nil
+	*v.at(dest) = *v.at(src)
+	*v.at(src) = nil
 
 	return nil
 }
@@ -75,12 +82,4 @@ func (v ViewController) start() {
 		}
 		v.activePlayer = Player1 + Player2 - v.activePlayer // switch players
 	}
-}
-
-type InvalidMove struct {
-	s string
-}
-
-func (e InvalidMove) Error() string {
-	return "Invalid move, " + e.s + " Try again: "
 }
