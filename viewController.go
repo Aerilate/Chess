@@ -9,9 +9,6 @@ import (
 	"strings"
 )
 
-const Player1 = 1
-const Player2 = 2
-
 type ViewController struct {
 	Board
 	activePlayer int
@@ -35,8 +32,6 @@ func (vc ViewController) move(src Posn, dest Posn) error {
 		return InvalidMove{"Coordinate " + src.String() + " has no piece!"}
 	} else if piece.player != vc.activePlayer {
 		return NotYourPiece{}
-	} else if *vc.at(dest) != nil && (*vc.at(dest)).player == vc.activePlayer { // check if dest occupied by own piece
-		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your piece!"}
 	}
 
 	// check piece can move to dest
@@ -45,7 +40,8 @@ func (vc ViewController) move(src Posn, dest Posn) error {
 		return err
 	}
 
-	*vc.at(dest) = *vc.at(src)
+	*vc.at(dest) = piece
+	piece.Posn = dest
 	*vc.at(src) = nil
 	return nil
 }
@@ -85,6 +81,6 @@ func (vc ViewController) start() {
 				fmt.Print("Unrecognized instruction. Try again: ")
 			}
 		}
-		vc.activePlayer = Player1 + Player2 - vc.activePlayer // switch players
+		vc.activePlayer = otherPlayer(vc.activePlayer) // switch players
 	}
 }
