@@ -18,10 +18,10 @@ type ViewController struct {
 }
 
 func moveInBounds(p Posn) bool {
-	return 0 <= p.x && p.x < BoardSize && 0 <= p.y && p.y < BoardSize
+	return 0 <= p.i && p.i < BoardSize && 0 <= p.j && p.j < BoardSize
 }
 
-func (v ViewController) move(src Posn, dest Posn) error {
+func (vc ViewController) move(src Posn, dest Posn) error {
 	if !moveInBounds(src) {
 		return InvalidMove{"Source coordinate " + src.String() + " is out of range!"}
 	} else if !moveInBounds(dest) {
@@ -30,29 +30,34 @@ func (v ViewController) move(src Posn, dest Posn) error {
 		return InvalidMove{"Source and destination coordinates can't be the same!"}
 	}
 
-	piece := *v.at(src)
-	if piece == nil {
+	piece := *vc.at(src)
+	if piece == nil { // check piece exists at src
 		return InvalidMove{"Coordinate " + src.String() + " has no piece!"}
+	} else if piece.player != vc.activePlayer {
+		return NotYourPiece{}
+	} else if *vc.at(dest) != nil && (*vc.at(dest)).player == vc.activePlayer { // check if dest occupied by own piece
+		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your piece!"}
 	}
-	err := piece.checkMove(&v, dest)
+
+	// check piece can move to dest
+	err := piece.checkMove(&vc, dest)
 	if err != nil {
 		return err
 	}
 
-	*v.at(dest) = *v.at(src)
-	*v.at(src) = nil
-
+	*vc.at(dest) = *vc.at(src)
+	*vc.at(src) = nil
 	return nil
 }
 
-func (v ViewController) start() {
-	v.Board = *NewBoard()
-	v.activePlayer = Player1
+func (vc ViewController) start() {
+	vc.Board = *NewBoard()
+	vc.activePlayer = Player1
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Println(v.Board)
-		fmt.Printf("Player %d's Turn. Enter a move: ", v.activePlayer)
+		fmt.Println(vc.Board)
+		fmt.Printf("Player %d's Turn. Enter a move: ", vc.activePlayer)
 
 		for {
 			in, _ := reader.ReadString('\n')
@@ -64,13 +69,13 @@ func (v ViewController) start() {
 				os.Exit(0)
 			} else if moveRegex.MatchString(in) {
 				src := Posn{}
-				src.x, _ = strconv.Atoi(string(in[1]))
-				src.y, _ = strconv.Atoi(string(in[2]))
+				src.i, _ = strconv.Atoi(string(in[1]))
+				src.j, _ = strconv.Atoi(string(in[2]))
 				dest := Posn{}
-				dest.x, _ = strconv.Atoi(string(in[3]))
-				dest.y, _ = strconv.Atoi(string(in[4]))
+				dest.i, _ = strconv.Atoi(string(in[3]))
+				dest.j, _ = strconv.Atoi(string(in[4]))
 
-				err := v.move(src, dest)
+				err := vc.move(src, dest)
 				if err == nil { // end turn
 					break
 				} else {
@@ -80,6 +85,6 @@ func (v ViewController) start() {
 				fmt.Print("Unrecognized instruction. Try again: ")
 			}
 		}
-		v.activePlayer = Player1 + Player2 - v.activePlayer // switch players
+		vc.activePlayer = Player1 + Player2 - vc.activePlayer // switch players
 	}
 }

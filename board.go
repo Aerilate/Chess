@@ -43,7 +43,7 @@ func NewBoard() *Board {
 }
 
 func (b *Board) at(p Posn) **Piece {
-	return &b.board[p.x][p.y]
+	return &b.board[p.i][p.j]
 }
 
 func (b Board) String() string {

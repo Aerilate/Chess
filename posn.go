@@ -5,14 +5,14 @@ import (
 )
 
 type Posn struct {
-	x int
-	y int
+	i int
+	j int
 }
 
 func (p Posn) String() string {
-	return fmt.Sprintf("(%d,%d)", p.x, p.y)
+	return fmt.Sprintf("(%d,%d)", p.i, p.j)
 }
 
 func (p Posn) equals(other Posn) bool {
-	return p.x == other.x && p.y == other.y
+	return p.i == other.i && p.j == other.j
 }
