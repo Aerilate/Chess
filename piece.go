@@ -36,18 +36,20 @@ func (p *Piece) String() string {
 func (p *Piece) checkMove(vc *ViewController, dest Posn) (err error) {
 	switch p.pieceType {
 	case pawn:
-		err = p.checkPawnMove(&vc.Board, dest)
+		err = p.checkPawnMove(dest)
 	case knight:
-		err = p.checkKnightMove(&vc.Board, dest)
+		err = p.checkKnightMove(dest)
 	case bishop:
 	case rook:
+		err = p.checkRookMove(vc.Board, dest)
 	case queen:
 	case king:
+		err = p.checkKingMove(dest)
 	}
 	return
 }
 
-func (p *Piece) checkPawnMove(board *Board, dest Posn) error {
+func (p *Piece) checkPawnMove(dest Posn) error {
 	if (p.player == Player1 && p.i == 6 && dest.i == p.i-2) ||
 		(p.player == Player2 && p.i == 1 && dest.i == p.i+2) { // move two squares from home row
 		return nil
@@ -62,7 +64,7 @@ func (p *Piece) checkPawnMove(board *Board, dest Posn) error {
 	return InvalidMove{"Pawn can't move there vertically."}
 }
 
-func (p *Piece) checkKnightMove(board *Board, dest Posn) error {
+func (p *Piece) checkKnightMove(dest Posn) error {
 	if (abs(dest.i-p.i) == 1 && abs(dest.j-p.j) == 2) ||
 		(abs(dest.i-p.i) == 2 && abs(dest.j-p.j) == 1) {
 		return nil
@@ -70,10 +72,10 @@ func (p *Piece) checkKnightMove(board *Board, dest Posn) error {
 	return InvalidMove{"Knight can't move there."}
 }
 
-func (p *Piece) checkRookMove(board *Board, dest Posn) error {
+func (p *Piece) checkRookMove(board Board, dest Posn) error {
 	if abs(dest.j-p.j) == 0 {
 		for i := p.i + 1; i < dest.i; i += mag(dest.i - p.i) {
-			if board.board[i][p.j] != nil {
+			if board[i][p.j] != nil {
 				return InvalidMove{"Piece in the way."}
 			}
 		}
@@ -83,7 +85,7 @@ func (p *Piece) checkRookMove(board *Board, dest Posn) error {
 		return InvalidMove{"Piece in the way."}
 	} else if abs(dest.i-p.i) == 0 {
 		for j := p.j + 1; j < dest.j; j += mag(dest.j - p.j) {
-			if board.board[p.i][j] != nil {
+			if board[p.i][j] != nil {
 				return InvalidMove{"Piece in the way."}
 			}
 		}
@@ -95,7 +97,7 @@ func (p *Piece) checkRookMove(board *Board, dest Posn) error {
 	return InvalidMove{"Rook can't move there."}
 }
 
-func (p *Piece) checkKingMove(board *Board, dest Posn) error {
+func (p *Piece) checkKingMove(dest Posn) error {
 	if abs(dest.i-p.i) == 1 && abs(dest.j-p.j) == 1 {
 		return nil
 	}

@@ -2,18 +2,16 @@ package main
 
 const BoardSize = 8
 
-type Board struct {
-	board [][]*Piece
-}
+type Board [][]*Piece
 
 func NewBoard() *Board {
-	b := Board{}
-	b.board = make([][]*Piece, BoardSize, BoardSize)
+	board := Board{}
+	board = make([][]*Piece, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
-		b.board[i] = make([]*Piece, BoardSize, BoardSize)
+		board[i] = make([]*Piece, BoardSize, BoardSize)
 		for j := 0; j < BoardSize; j++ {
-			slot := &b.board[i][j]
+			slot := &board[i][j]
 			player := Player1
 			if i == 0 || i == 1 {
 				player = Player2
@@ -39,11 +37,11 @@ func NewBoard() *Board {
 			}
 		}
 	}
-	return &b
+	return &board
 }
 
 func (b *Board) at(p Posn) **Piece {
-	return &b.board[p.i][p.j]
+	return &(*b)[p.i][p.j]
 }
 
 func (b Board) String() string {
@@ -57,7 +55,7 @@ func (b Board) String() string {
 
 	str := ""
 	addBorder(&str)
-	for _, row := range b.board {
+	for _, row := range b {
 		for _, piece := range row {
 			str += "|"
 			if piece == nil {
