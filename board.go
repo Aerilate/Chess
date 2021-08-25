@@ -18,7 +18,7 @@ func NewBoard() *Board {
 			}
 
 			if i == 0 || i == 7 {
-				posn := Posn{i, j}
+				posn := IPosn{i, j}
 				switch j {
 				case 0, 7:
 					*slot = &Piece{rook, player, posn}
@@ -32,7 +32,7 @@ func NewBoard() *Board {
 					*slot = &Piece{king, player, posn}
 				}
 			} else if i == 1 || i == 6 {
-				posn := Posn{i, j}
+				posn := IPosn{i, j}
 				*slot = &Piece{pawn, player, posn}
 			}
 		}
@@ -40,7 +40,7 @@ func NewBoard() *Board {
 	return &board
 }
 
-func (b *Board) at(p Posn) **Piece {
+func (b *Board) at(p IPosn) **Piece {
 	return &(*b)[p.i][p.j]
 }
 

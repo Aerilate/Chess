@@ -16,7 +16,7 @@ const (
 type Piece struct {
 	pieceType string
 	player    int
-	Posn
+	IPosn
 }
 
 func (p *Piece) String() string {
@@ -30,7 +30,7 @@ func (p *Piece) isEnemyTo(other *Piece) bool {
 	return other != nil && p.player != other.player
 }
 
-func (p *Piece) checkMove(vc *ViewController, dest Posn) (err error) {
+func (p *Piece) checkMove(vc *ViewController, dest IPosn) (err error) {
 	if *vc.at(dest) != nil && p.player == (*vc.at(dest)).player { // check if dest occupied by own piece
 		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your own piece!"}
 	}
@@ -52,17 +52,17 @@ func (p *Piece) checkMove(vc *ViewController, dest Posn) (err error) {
 	return err
 }
 
-func (p *Piece) checkPawnMove(board Board, dest Posn) error {
+func (p *Piece) checkPawnMove(board Board, dest IPosn) error {
 	pawnRow := pawnHomeRow(p.player)
 	moveDir := moveDirection(p.player)
 
 	if dest.j == p.j { // move straight ahead
-		if board[dest.i+moveDir][dest.j] != nil {
+		if board[p.i+moveDir][p.j] != nil {
 			return InvalidMove{"Piece in the way!"}
 		}
 
 		if p.i == pawnRow && dest.i == p.i+moveDir*2 { // move two squares from home row
-			if board[dest.i+moveDir*2][dest.j] == nil {
+			if board[p.i+moveDir*2][p.j] == nil {
 				return nil
 			}
 			return InvalidMove{"Piece in the way!"}
@@ -77,7 +77,7 @@ func (p *Piece) checkPawnMove(board Board, dest Posn) error {
 	return InvalidMove{"Pawn can't move there."}
 }
 
-func (p *Piece) checkKnightMove(dest Posn) error {
+func (p *Piece) checkKnightMove(dest IPosn) error {
 	if (abs(dest.i-p.i) == 1 && abs(dest.j-p.j) == 2) ||
 		(abs(dest.i-p.i) == 2 && abs(dest.j-p.j) == 1) {
 		return nil
@@ -85,7 +85,7 @@ func (p *Piece) checkKnightMove(dest Posn) error {
 	return InvalidMove{"Knight can't move there."}
 }
 
-func (p *Piece) checkBishopMove(board Board, dest Posn) error {
+func (p *Piece) checkBishopMove(board Board, dest IPosn) error {
 	iDiff := dest.i - p.i
 	jDiff := dest.j - p.j
 	if abs(iDiff) == abs(jDiff) {
@@ -99,7 +99,7 @@ func (p *Piece) checkBishopMove(board Board, dest Posn) error {
 	return InvalidMove{"Bishop can't move there."}
 }
 
-func (p *Piece) checkRookMove(board Board, dest Posn) (err error) {
+func (p *Piece) checkRookMove(board Board, dest IPosn) (err error) {
 	if abs(dest.j-p.j) == 0 {
 		f := func(i int) (err error) {
 			if board[i][p.j] != nil {
@@ -107,7 +107,7 @@ func (p *Piece) checkRookMove(board Board, dest Posn) (err error) {
 			}
 			return nil
 		}
-		return iterOverExclu(p.i, dest.i, f)
+		return iterBetween(p.i, dest.i, f)
 	} else if abs(dest.i-p.i) == 0 {
 		f := func(i int) (err error) {
 			if board[p.i][i] != nil {
@@ -115,12 +115,12 @@ func (p *Piece) checkRookMove(board Board, dest Posn) (err error) {
 			}
 			return nil
 		}
-		return iterOverExclu(p.j, dest.j, f)
+		return iterBetween(p.j, dest.j, f)
 	}
 	return InvalidMove{"Rook can't move there."}
 }
 
-func (p *Piece) checkQueenMove(board Board, dest Posn) error {
+func (p *Piece) checkQueenMove(board Board, dest IPosn) error {
 	lateral := p.checkRookMove(board, dest)
 	diag := p.checkBishopMove(board, dest)
 	if lateral == nil || diag == nil {
@@ -129,7 +129,7 @@ func (p *Piece) checkQueenMove(board Board, dest Posn) error {
 	return InvalidMove{"Queen can't move there."}
 }
 
-func (p *Piece) checkKingMove(dest Posn) error {
+func (p *Piece) checkKingMove(dest IPosn) error {
 	if abs(dest.i-p.i) == 1 && abs(dest.j-p.j) == 1 {
 		return nil
 	}
@@ -138,7 +138,7 @@ func (p *Piece) checkKingMove(dest Posn) error {
 
 type iterateFn func(i int) error
 
-func iterOverExclu(src int, dest int, f iterateFn) (err error) {
+func iterBetween(src int, dest int, f iterateFn) (err error) {
 	lo := min(src, dest) + 1
 	hi := max(src, dest)
 

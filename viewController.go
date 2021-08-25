@@ -17,11 +17,11 @@ type ViewController struct {
 	moves        MovesList
 }
 
-func moveInBounds(p Posn) bool {
+func moveInBounds(p IPosn) bool {
 	return 0 <= p.i && p.i < BoardSize && 0 <= p.j && p.j < BoardSize
 }
 
-func (vc *ViewController) move(src Posn, dest Posn) error {
+func (vc *ViewController) move(src IPosn, dest IPosn) error {
 	if !moveInBounds(src) {
 		return InvalidMove{"Source coordinate " + src.String() + " is out of range!"}
 	} else if !moveInBounds(dest) {
@@ -44,7 +44,7 @@ func (vc *ViewController) move(src Posn, dest Posn) error {
 	}
 
 	*vc.at(dest) = piece
-	piece.Posn = dest
+	piece.IPosn = dest
 	*vc.at(src) = nil
 	return nil
 }
@@ -80,19 +80,19 @@ func (vc *ViewController) start() {
 		for {
 			next := vc.nextMove()
 
-			moveRegex, _ := regexp.Compile("m[0-7][0-7][0-7][0-7]")
+			moveRegex, _ := regexp.Compile("[a-h][0-7][a-h][0-7]")
 			if next == "q" || next == "quit" {
 				fmt.Println("GAME OVER")
 				os.Exit(0)
 			} else if moveRegex.MatchString(next) {
-				src := Posn{}
-				src.i, _ = strconv.Atoi(string(next[1]))
-				src.j, _ = strconv.Atoi(string(next[2]))
-				dest := Posn{}
-				dest.i, _ = strconv.Atoi(string(next[3]))
-				dest.j, _ = strconv.Atoi(string(next[4]))
+				src := StdPosn{}
+				src.file = rune(next[0])
+				src.rank, _ = strconv.Atoi(string(next[1]))
+				dest := StdPosn{}
+				dest.file = rune(next[2])
+				dest.rank, _ = strconv.Atoi(string(next[3]))
 
-				err := vc.move(src, dest)
+				err := vc.move(src.toIPosn(), dest.toIPosn())
 				if err == nil { // end turn
 					break
 				} else {
