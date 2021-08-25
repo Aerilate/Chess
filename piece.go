@@ -99,21 +99,23 @@ func (p *Piece) checkBishopMove(board Board, dest Posn) error {
 	return InvalidMove{"Bishop can't move there."}
 }
 
-func (p *Piece) checkRookMove(board Board, dest Posn) error {
+func (p *Piece) checkRookMove(board Board, dest Posn) (err error) {
 	if abs(dest.j-p.j) == 0 {
-		for i := p.i + 1; i < dest.i; i += mag(dest.i - p.i) {
+		f := func(i int) (err error) {
 			if board[i][p.j] != nil {
 				return InvalidMove{"Piece in the way."}
 			}
+			return nil
 		}
-		return nil
+		return iterOverExclu(p.i, dest.i, f)
 	} else if abs(dest.i-p.i) == 0 {
-		for j := p.j + 1; j < dest.j; j += mag(dest.j - p.j) {
-			if board[p.i][j] != nil {
+		f := func(i int) (err error) {
+			if board[p.i][i] != nil {
 				return InvalidMove{"Piece in the way."}
 			}
+			return nil
 		}
-		return nil
+		return iterOverExclu(p.j, dest.j, f)
 	}
 	return InvalidMove{"Rook can't move there."}
 }
@@ -134,16 +136,14 @@ func (p *Piece) checkKingMove(dest Posn) error {
 	return InvalidMove{"King can't move there."}
 }
 
-func abs(n int) int {
-	if n > 0 {
-		return n
-	}
-	return -n
-}
+type iterateFn func(i int) error
 
-func mag(n int) int {
-	if n == 0 {
-		return 0
+func iterOverExclu(src int, dest int, f iterateFn) (err error) {
+	lo := min(src, dest) + 1
+	hi := max(src, dest)
+
+	for i := lo; i < hi; i++ {
+		err = f(i)
 	}
-	return n / abs(n)
+	return err
 }
