@@ -144,18 +144,18 @@ func iterBetween(src int, dest int, f iterateFn) (err error) {
 	return err
 }
 
-func (p *Piece) threats() (threats []IPosn) {
+func (p *Piece) threats(b Board) (threats []IPosn) {
 	switch p.pieceType {
 	case pawn:
 		threats = p.pawnThreats()
 	case knight:
 		threats = p.knightThreats()
 	case bishop:
-		threats = p.bishopThreats()
+		threats = p.bishopThreats(b)
 	case rook:
-		threats = p.rookThreats()
+		threats = p.rookThreats(b)
 	case queen:
-		threats = p.queenThreats()
+		threats = p.queenThreats(b)
 	case king:
 		threats = p.kingThreats()
 	}
@@ -168,25 +168,46 @@ func (p *Piece) pawnThreats() (threats []IPosn) {
 }
 
 func (p *Piece) knightThreats() (threats []IPosn) {
+	threats = append(threats, IPosn{p.i + 2, p.j + 1}, IPosn{p.i + 2, p.j - 1})
+	threats = append(threats, IPosn{p.i - 2, p.j + 1}, IPosn{p.i - 2, p.j - 1})
+	threats = append(threats, IPosn{p.i + 1, p.j + 2}, IPosn{p.i + 1, p.j - 2})
+	threats = append(threats, IPosn{p.i - 1, p.j + 2}, IPosn{p.i - 1, p.j - 2})
 	return threats
 }
 
-func (p *Piece) bishopThreats() (threats []IPosn) {
-	return threats
+func (p *Piece) bishopThreats(b Board) (threats []IPosn) {
+	incs := []IPosn{{1, 1}, {-1, 1}, {1, -1}, {-1, -1}}
+	return p.iterThreats(b, incs)
 }
 
-func (p *Piece) rookThreats() (threats []IPosn) {
-	return threats
+func (p *Piece) rookThreats(b Board) (threats []IPosn) {
+	incs := []IPosn{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	return p.iterThreats(b, incs)
 }
 
-func (p *Piece) queenThreats() (threats []IPosn) {
-	return threats
+func (p *Piece) queenThreats(b Board) (threats []IPosn) {
+	return append(p.bishopThreats(b), p.rookThreats(b)...)
 }
 
 func (p *Piece) kingThreats() (threats []IPosn) {
 	for i := p.i - 1; i <= p.i+1; i++ {
 		for j := p.j - 1; j <= p.j+1; j++ {
 			threats = append(threats, IPosn{i, j})
+		}
+	}
+	return threats
+}
+
+func (p *Piece) iterThreats(b Board, incs []IPosn) (threats []IPosn) {
+	for _, inc := range incs {
+		curr := p.IPosn
+		curr = curr.add(inc) // exclude piece position itself
+		for moveInBounds(curr) {
+			threats = append(threats, curr)
+			if *b.at(curr) != nil { // piece at edge of threat
+				break
+			}
+			curr = curr.add(inc)
 		}
 	}
 	return threats

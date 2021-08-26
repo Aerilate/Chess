@@ -51,9 +51,10 @@ func (vc *ViewController) start() {
 				os.Exit(0)
 			} else if moveRegex, _ := regexp.Compile("^[a-h][0-7][a-h][0-7]$"); moveRegex.MatchString(nextMove) {
 				err := vc.move(nextMove)
-				if err != nil {
-					fmt.Println(err.Error())
+				if err == nil {
+					break
 				}
+				fmt.Println(err.Error())
 			} else {
 				fmt.Println("Unrecognized instruction. Try again: ")
 			}

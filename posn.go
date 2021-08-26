@@ -22,6 +22,10 @@ func (p IPosn) String() string {
 	return fmt.Sprintf("(%d,%d)", p.i, p.j)
 }
 
+func (p IPosn) add(other IPosn) IPosn {
+	return IPosn{p.i + other.i, p.j + other.j}
+}
+
 // StdPosn standard Chess notation
 type StdPosn struct {
 	file rune

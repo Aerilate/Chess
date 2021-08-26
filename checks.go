@@ -1,12 +1,14 @@
 package main
 
-type ChecksBoard [][]bool
+import "fmt"
+
+type ChecksBoard [][]uint
 
 func NewChecksBoard() *ChecksBoard {
-	board := make([][]bool, BoardSize, BoardSize)
+	board := make([][]uint, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
-		board[i] = make([]bool, BoardSize, BoardSize)
+		board[i] = make([]uint, BoardSize, BoardSize)
 	}
 	return (*ChecksBoard)(&board)
 }
@@ -23,10 +25,10 @@ func (b ChecksBoard) String() string {
 	str := ""
 	addBorder(&str)
 	for _, row := range b {
-		for _, piece := range row {
+		for _, square := range row {
 			str += "|"
-			if piece {
-				str += "1"
+			if square > 0 {
+				str += fmt.Sprintf("%d", square)
 			} else {
 				str += " "
 			}

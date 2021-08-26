@@ -19,7 +19,9 @@ type GameState struct {
 }
 
 func NewGameState() *GameState {
-	return &GameState{Board: *NewBoard(), activePlayer: 1, checks: [3]ChecksBoard{*NewChecksBoard(), *NewChecksBoard(), *NewChecksBoard()}}
+	newGame := &GameState{Board: *NewBoard(), activePlayer: 1, checks: [3]ChecksBoard{*NewChecksBoard(), *NewChecksBoard(), *NewChecksBoard()}}
+	newGame.updateChecks()
+	return newGame
 }
 
 func (game *GameState) updateChecks() {
@@ -27,14 +29,14 @@ func (game *GameState) updateChecks() {
 	for i := 0; i < len(game.Board); i++ {
 		for j := 0; j < len(game.Board[0]); j++ {
 			if game.Board[i][j] != nil && game.Board[i][j].player != game.activePlayer {
-				threats = append(threats, game.Board[i][j].threats()...)
+				threats = append(threats, game.Board[i][j].threats(game.Board)...)
 			}
 		}
 	}
 
 	for _, posn := range threats {
 		if moveInBounds(posn) { // filter
-			game.checks[game.activePlayer][posn.i][posn.j] = true
+			game.checks[game.activePlayer][posn.i][posn.j]++
 		}
 	}
 }
@@ -69,12 +71,12 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	*game.at(src) = nil
 	game.moveHistory = append(game.moveHistory, Move{src, dest})
 	game.endTurn()
-	game.updateChecks()
 	return nil
 }
 
 func (game *GameState) endTurn() {
 	game.activePlayer = otherPlayer(game.activePlayer)
+	game.updateChecks()
 }
 
 func (game GameState) getActivePlayer() int {
