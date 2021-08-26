@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func gameReader(fileName string) (slice MovesList, err error) {
+func gameReader(fileName string) (slice []string, err error) {
 	file, err := os.Open(fileName)
 	defer file.Close()
 	if err != nil {

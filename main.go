@@ -6,9 +6,8 @@ func main() {
 	fileName := flag.String("i", "", "i")
 	flag.Parse()
 
-	movesQueue, _ := gameReader(*fileName)
-
-	v := ViewController{}
-	v.loadQueue(movesQueue)
-	v.start()
+	file, _ := gameReader(*fileName)
+	vc := ViewController{NewGameState()}
+	vc.load(file)
+	vc.start()
 }

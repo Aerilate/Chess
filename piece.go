@@ -30,22 +30,18 @@ func (p *Piece) isEnemyTo(other *Piece) bool {
 	return other != nil && p.player != other.player
 }
 
-func (p *Piece) checkMove(vc *ViewController, dest IPosn) (err error) {
-	if *vc.at(dest) != nil && p.player == (*vc.at(dest)).player { // check if dest occupied by own piece
-		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your own piece!"}
-	}
-
+func (p *Piece) checkMove(board Board, dest IPosn) (err error) {
 	switch p.pieceType {
 	case pawn:
-		err = p.checkPawnMove(vc.Board, dest)
+		err = p.checkPawnMove(board, dest)
 	case knight:
 		err = p.checkKnightMove(dest)
 	case bishop:
-		err = p.checkBishopMove(vc.Board, dest)
+		err = p.checkBishopMove(board, dest)
 	case rook:
-		err = p.checkRookMove(vc.Board, dest)
+		err = p.checkRookMove(board, dest)
 	case queen:
-		err = p.checkQueenMove(vc.Board, dest)
+		err = p.checkQueenMove(board, dest)
 	case king:
 		err = p.checkKingMove(dest)
 	}

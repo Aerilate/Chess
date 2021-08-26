@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+	"strconv"
+)
 
 // IPosn slice coordinates representation
 type IPosn struct {
@@ -24,6 +28,17 @@ type StdPosn struct {
 	rank int
 }
 
+func toStdPosn(s string) (*StdPosn, error) {
+	moveRegex, _ := regexp.Compile("[a-h][0-7]")
+	if !moveRegex.MatchString(s) {
+		return nil, BadStdPosn{}
+	}
+
+	file := rune(s[0])
+	rank, _ := strconv.Atoi(string(s[1]))
+	return &StdPosn{file, rank}, nil
+}
+
 func (p StdPosn) toIPosn() IPosn {
 	i := BoardSize - p.rank
 	j := p.file - 'a'
@@ -32,4 +47,10 @@ func (p StdPosn) toIPosn() IPosn {
 
 func (p StdPosn) String() string {
 	return fmt.Sprintf("(%c,%d)", p.file, p.rank)
+}
+
+type BadStdPosn struct{}
+
+func (e BadStdPosn) Error() string {
+	return "Can't convert string to a coordinate!"
 }

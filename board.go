@@ -40,6 +40,10 @@ func NewBoard() *Board {
 	return &board
 }
 
+func moveInBounds(p IPosn) bool {
+	return 0 <= p.i && p.i < BoardSize && 0 <= p.j && p.j < BoardSize
+}
+
 func (b *Board) at(p IPosn) **Piece {
 	return &(*b)[p.i][p.j]
 }
