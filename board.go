@@ -5,8 +5,7 @@ const BoardSize = 8
 type Board [][]*Piece
 
 func NewBoard() *Board {
-	board := Board{}
-	board = make([][]*Piece, BoardSize, BoardSize)
+	board := make([][]*Piece, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
 		board[i] = make([]*Piece, BoardSize, BoardSize)
@@ -37,7 +36,7 @@ func NewBoard() *Board {
 			}
 		}
 	}
-	return &board
+	return (*Board)(&board)
 }
 
 func moveInBounds(p IPosn) bool {

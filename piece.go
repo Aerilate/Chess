@@ -143,3 +143,51 @@ func iterBetween(src int, dest int, f iterateFn) (err error) {
 	}
 	return err
 }
+
+func (p *Piece) threats() (threats []IPosn) {
+	switch p.pieceType {
+	case pawn:
+		threats = p.pawnThreats()
+	case knight:
+		threats = p.knightThreats()
+	case bishop:
+		threats = p.bishopThreats()
+	case rook:
+		threats = p.rookThreats()
+	case queen:
+		threats = p.queenThreats()
+	case king:
+		threats = p.kingThreats()
+	}
+	return threats
+}
+
+func (p *Piece) pawnThreats() (threats []IPosn) {
+	moveDir := moveDirection(p.player)
+	return []IPosn{{p.i + moveDir, p.j - 1}, {p.i + moveDir, p.j + 1}}
+}
+
+func (p *Piece) knightThreats() (threats []IPosn) {
+	return threats
+}
+
+func (p *Piece) bishopThreats() (threats []IPosn) {
+	return threats
+}
+
+func (p *Piece) rookThreats() (threats []IPosn) {
+	return threats
+}
+
+func (p *Piece) queenThreats() (threats []IPosn) {
+	return threats
+}
+
+func (p *Piece) kingThreats() (threats []IPosn) {
+	for i := p.i - 1; i <= p.i+1; i++ {
+		for j := p.j - 1; j <= p.j+1; j++ {
+			threats = append(threats, IPosn{i, j})
+		}
+	}
+	return threats
+}

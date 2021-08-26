@@ -11,16 +11,32 @@ type Move struct {
 	dest IPosn
 }
 
-type MovesList []Move
-
 type GameState struct {
 	Board
 	activePlayer int // 1 or 2
-	moveHistory  MovesList
+	moveHistory  []Move
+	checks       [3]ChecksBoard
 }
 
 func NewGameState() *GameState {
-	return &GameState{Board: *NewBoard(), activePlayer: 1}
+	return &GameState{Board: *NewBoard(), activePlayer: 1, checks: [3]ChecksBoard{*NewChecksBoard(), *NewChecksBoard(), *NewChecksBoard()}}
+}
+
+func (game *GameState) updateChecks() {
+	threats := make([]IPosn, 0)
+	for i := 0; i < len(game.Board); i++ {
+		for j := 0; j < len(game.Board[0]); j++ {
+			if game.Board[i][j] != nil && game.Board[i][j].player != game.activePlayer {
+				threats = append(threats, game.Board[i][j].threats()...)
+			}
+		}
+	}
+
+	for _, posn := range threats {
+		if moveInBounds(posn) { // filter
+			game.checks[game.activePlayer][posn.i][posn.j] = true
+		}
+	}
 }
 
 func (game *GameState) move(src IPosn, dest IPosn) error {
@@ -53,6 +69,7 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	*game.at(src) = nil
 	game.moveHistory = append(game.moveHistory, Move{src, dest})
 	game.endTurn()
+	game.updateChecks()
 	return nil
 }
 
@@ -65,5 +82,5 @@ func (game GameState) getActivePlayer() int {
 }
 
 func (game GameState) String() string {
-	return game.Board.String()
+	return game.Board.String() + "\n" + game.checks[game.activePlayer].String()
 }
