@@ -13,6 +13,10 @@ func NewChecksBoard() *ChecksBoard {
 	return (*ChecksBoard)(&board)
 }
 
+func (b *ChecksBoard) squareIsSafe(p IPosn) bool {
+	return (*b)[p.i][p.j] == 0
+}
+
 func (b ChecksBoard) String() string {
 	addBorder := func(str *string) {
 		*str += "O"

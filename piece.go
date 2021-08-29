@@ -30,7 +30,7 @@ func (p *Piece) isEnemyTo(other *Piece) bool {
 	return other != nil && p.player != other.player
 }
 
-func (p *Piece) checkMove(board Board, dest IPosn) (err error) {
+func (p *Piece) checkMove(board Board, threats ChecksBoard, dest IPosn) (err error) {
 	switch p.pieceType {
 	case pawn:
 		err = p.checkPawnMove(board, dest)
@@ -43,7 +43,7 @@ func (p *Piece) checkMove(board Board, dest IPosn) (err error) {
 	case queen:
 		err = p.checkQueenMove(board, dest)
 	case king:
-		err = p.checkKingMove(dest)
+		err = p.checkKingMove(threats, dest)
 	}
 	return err
 }
@@ -125,8 +125,8 @@ func (p *Piece) checkQueenMove(board Board, dest IPosn) error {
 	return InvalidMove{"Queen can't move there."}
 }
 
-func (p *Piece) checkKingMove(dest IPosn) error {
-	if abs(dest.i-p.i) == 1 && abs(dest.j-p.j) == 1 {
+func (p *Piece) checkKingMove(threats ChecksBoard, dest IPosn) error {
+	if abs(dest.i-p.i) <= 1 && abs(dest.j-p.j) <= 1 && threats.squareIsSafe(dest) {
 		return nil
 	}
 	return InvalidMove{"King can't move there."}

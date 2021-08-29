@@ -60,7 +60,7 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	}
 
 	// check piece can move to dest
-	err := piece.checkMove(game.Board, dest)
+	err := piece.checkMove(game.Board, game.checks[game.activePlayer], dest)
 	if err != nil {
 		return err
 	}
