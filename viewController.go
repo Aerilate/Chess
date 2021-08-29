@@ -12,17 +12,49 @@ type ViewController struct {
 	Gameable
 }
 
+func readGameFile(fileName string) (slice []string, err error) {
+	file, err := os.Open(fileName)
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(file)
+
+	if err != nil {
+		return nil, err
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		slice = append(slice, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return slice, err
+	}
+	return slice, err
+}
+
+func (vc *ViewController) loadSavedGame(fileName string) error {
+	file, err := readGameFile(fileName)
+	if err != nil {
+		return err
+	}
+
+	for _, line := range file {
+		err = vc.move(line)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (vc *ViewController) readNextMove() string {
 	reader := bufio.NewReader(os.Stdin)
 	input, _ := reader.ReadString('\n')
 	input = strings.Replace(input, "\n", "", -1) // remove \n
 	return input
-}
-
-func (vc *ViewController) load(file []string) {
-	for _, line := range file {
-		vc.move(line)
-	}
 }
 
 func (vc *ViewController) move(s string) (err error) {
