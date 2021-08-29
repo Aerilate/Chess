@@ -2,13 +2,13 @@ package main
 
 const BoardSize = 8
 
-type Board [][]*Piece
+type Board [][]Piece
 
 func NewBoard() *Board {
-	board := make([][]*Piece, BoardSize, BoardSize)
+	board := make([][]Piece, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
-		board[i] = make([]*Piece, BoardSize, BoardSize)
+		board[i] = make([]Piece, BoardSize, BoardSize)
 		for j := 0; j < BoardSize; j++ {
 			slot := &board[i][j]
 			player := Player1
@@ -20,19 +20,19 @@ func NewBoard() *Board {
 				posn := IPosn{i, j}
 				switch j {
 				case 0, 7:
-					*slot = &Piece{rook, player, posn}
+					*slot = NewPiece(rook, player, posn)
 				case 1, 6:
-					*slot = &Piece{knight, player, posn}
+					*slot = NewPiece(knight, player, posn)
 				case 2, 5:
-					*slot = &Piece{bishop, player, posn}
+					*slot = NewPiece(bishop, player, posn)
 				case 3:
-					*slot = &Piece{queen, player, posn}
+					*slot = NewPiece(queen, player, posn)
 				case 4:
-					*slot = &Piece{king, player, posn}
+					*slot = NewPiece(king, player, posn)
 				}
 			} else if i == 1 || i == 6 {
 				posn := IPosn{i, j}
-				*slot = &Piece{pawn, player, posn}
+				*slot = NewPiece(pawn, player, posn)
 			}
 		}
 	}
@@ -43,7 +43,7 @@ func moveInBounds(p IPosn) bool {
 	return 0 <= p.i && p.i < BoardSize && 0 <= p.j && p.j < BoardSize
 }
 
-func (b *Board) at(p IPosn) **Piece {
+func (b *Board) at(p IPosn) *Piece {
 	return &(*b)[p.i][p.j]
 }
 

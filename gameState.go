@@ -24,16 +24,20 @@ func NewGameState() *GameState {
 	return newGame
 }
 
-func (game *GameState) updateChecks() {
+func calcThreats(board Board, player int) []IPosn {
 	threats := make([]IPosn, 0)
-	for i := 0; i < len(game.Board); i++ {
-		for j := 0; j < len(game.Board[0]); j++ {
-			if game.Board[i][j] != nil && game.Board[i][j].player != game.activePlayer {
-				threats = append(threats, game.Board[i][j].threats(game.Board)...)
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[0]); j++ {
+			if board[i][j] != nil && board[i][j].pieceInfo().player != player {
+				threats = append(threats, board[i][j].threats(board)...)
 			}
 		}
 	}
+	return threats
+}
 
+func (game *GameState) updateChecks() {
+	threats := calcThreats(game.Board, game.activePlayer)
 	for _, posn := range threats {
 		if moveInBounds(posn) { // filter
 			game.checks[game.activePlayer][posn.i][posn.j]++
@@ -53,9 +57,9 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	piece := *game.at(src)
 	if piece == nil { // check piece exists at src
 		return InvalidMove{"Coordinate " + src.String() + " has no piece!"}
-	} else if piece.player != game.activePlayer {
+	} else if piece.pieceInfo().player != game.activePlayer {
 		return NotYourPiece{}
-	} else if *game.at(dest) != nil && piece.player == (*game.at(dest)).player { // check if dest occupied by own piece
+	} else if *game.at(dest) != nil && piece.pieceInfo().player == (*game.at(dest)).pieceInfo().player { // check if dest occupied by own piece
 		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your own piece!"}
 	}
 
@@ -67,7 +71,7 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 
 	// all is good!
 	*game.at(dest) = piece
-	piece.IPosn = dest
+	piece.updatePosn(dest)
 	*game.at(src) = nil
 	game.moveHistory = append(game.moveHistory, Move{src, dest})
 	game.endTurn()

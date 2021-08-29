@@ -17,7 +17,7 @@ func readGameFile(fileName string) (slice []string, err error) {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-			panic(err)
+			fmt.Fprintln(os.Stderr, "Could not read file")
 		}
 	}(file)
 
