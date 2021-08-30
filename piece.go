@@ -20,25 +20,6 @@ type Piece interface {
 	String() string
 }
 
-func NewPiece(pieceType string, player int, posn IPosn) Piece {
-	info := PieceInfo{player, posn}
-	switch pieceType {
-	case pawn:
-		return &Pawn{info}
-	case knight:
-		return &Knight{info}
-	case bishop:
-		return &Bishop{info}
-	case rook:
-		return &Rook{info}
-	case queen:
-		return &Queen{info}
-	case king:
-		return &King{info}
-	}
-	return nil
-}
-
 type PieceInfo struct {
 	player int
 	IPosn

@@ -31,3 +31,7 @@ func (p *King) threats(b Board) (threats []IPosn) {
 	}
 	return threats
 }
+
+func (p *King) underCheck(threats ChecksBoard) bool {
+	return threats[p.i][p.j] > 0
+}

@@ -6,35 +6,8 @@ type Board [][]Piece
 
 func NewBoard() *Board {
 	board := make([][]Piece, BoardSize, BoardSize)
-
 	for i := 0; i < BoardSize; i++ {
 		board[i] = make([]Piece, BoardSize, BoardSize)
-		for j := 0; j < BoardSize; j++ {
-			slot := &board[i][j]
-			player := Player1
-			if i == 0 || i == 1 {
-				player = Player2
-			}
-
-			if i == 0 || i == 7 {
-				posn := IPosn{i, j}
-				switch j {
-				case 0, 7:
-					*slot = NewPiece(rook, player, posn)
-				case 1, 6:
-					*slot = NewPiece(knight, player, posn)
-				case 2, 5:
-					*slot = NewPiece(bishop, player, posn)
-				case 3:
-					*slot = NewPiece(queen, player, posn)
-				case 4:
-					*slot = NewPiece(king, player, posn)
-				}
-			} else if i == 1 || i == 6 {
-				posn := IPosn{i, j}
-				*slot = NewPiece(pawn, player, posn)
-			}
-		}
 	}
 	return (*Board)(&board)
 }
@@ -71,4 +44,14 @@ func (b Board) String() string {
 	}
 	addBorder(&str)
 	return str
+}
+
+func (b Board) shallowCopy() Board {
+	boardCopy := *NewBoard()
+	for i := range b {
+		for j := range b[0] {
+			boardCopy[i][j] = b[i][j]
+		}
+	}
+	return boardCopy
 }
