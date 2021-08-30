@@ -16,15 +16,16 @@ type GameState struct {
 	prevBoard Board
 
 	players      [3]Player
-	activePlayer int // 1 or 2
+	activePlayer *Player
 
 	moveHistory []Move
 }
 
 func NewGameState() *GameState {
-	newGame := &GameState{Board: *NewBoard(), activePlayer: Player2}
+	newGame := &GameState{Board: *NewBoard()}
 	newGame.players[1] = Player{int: Player1}
 	newGame.players[2] = Player{int: Player2}
+	newGame.activePlayer = &newGame.players[2]
 	newGame.setupPieces()
 	newGame.endTurn()
 	return newGame
@@ -83,11 +84,11 @@ func calcThreats(board Board, player int) []IPosn {
 }
 
 func (game *GameState) updateChecks() {
-	game.players[game.activePlayer].attackedSquares = *NewChecksBoard() // clear board
-	threats := calcThreats(game.Board, game.activePlayer)
+	game.activePlayer.attackedSquares = *NewChecksBoard() // clear board
+	threats := calcThreats(game.Board, game.activePlayer.int)
 	for _, posn := range threats {
 		if moveInBounds(posn) { // filter
-			game.players[game.activePlayer].attackedSquares[posn.i][posn.j]++
+			game.activePlayer.attackedSquares[posn.i][posn.j]++
 		}
 	}
 }
@@ -117,14 +118,14 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	piece := *game.at(src)
 	if piece == nil { // check piece exists at src
 		return InvalidMove{"Coordinate " + src.String() + " has no piece!"}
-	} else if piece.pieceInfo().player != game.activePlayer {
+	} else if piece.pieceInfo().player != game.activePlayer.int {
 		return NotYourPiece{}
 	} else if *game.at(dest) != nil && piece.pieceInfo().player == (*game.at(dest)).pieceInfo().player { // check if dest occupied by own piece
 		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your own piece!"}
 	}
 
 	// check piece can move to dest
-	err := piece.checkMove(game.Board, game.players[game.activePlayer].attackedSquares, dest)
+	err := piece.checkMove(game.Board, game.activePlayer.attackedSquares, dest)
 	if err != nil {
 		return err
 	}
@@ -135,7 +136,7 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	*game.at(src) = nil
 
 	game.updateChecks()
-	if game.players[game.activePlayer].king.underCheck(game.players[game.activePlayer].attackedSquares) {
+	if game.activePlayer.king.underCheck(game.activePlayer.attackedSquares) {
 		game.rollbackMove()
 		return InvalidMove{"King would be under check!"}
 	}
@@ -145,15 +146,20 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 	return nil
 }
 
+func (game GameState) inactivePlayer() *Player {
+	otherPlayerId := otherPlayer(game.activePlayer.int)
+	return &game.players[otherPlayerId]
+}
+
 func (game *GameState) endTurn() {
-	game.activePlayer = otherPlayer(game.activePlayer)
+	game.activePlayer = game.inactivePlayer()
 	game.updateChecks()
 }
 
 func (game GameState) getActivePlayer() int {
-	return game.activePlayer
+	return game.activePlayer.int
 }
 
 func (game GameState) String() string {
-	return game.Board.String() + "\n" + game.players[otherPlayer(game.activePlayer)].attackedSquares.String()
+	return game.Board.String() + "\n" + game.activePlayer.attackedSquares.String()
 }
