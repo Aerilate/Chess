@@ -1,4 +1,4 @@
-package main
+package chess
 
 const Player1 = 1
 const Player2 = 2

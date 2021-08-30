@@ -1,4 +1,4 @@
-package main
+package chess
 
 type iterateFn func(i int) error
 

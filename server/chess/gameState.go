@@ -1,4 +1,4 @@
-package main
+package chess
 
 type Gameable interface {
 	move(src IPosn, dest IPosn) error

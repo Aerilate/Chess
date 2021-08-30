@@ -1,4 +1,4 @@
-package main
+package chess
 
 const BoardSize = 8
 
