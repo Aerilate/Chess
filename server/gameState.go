@@ -1,16 +1,5 @@
 package main
 
-type Gameable interface {
-	move(src IPosn, dest IPosn) error
-	getActivePlayer() int
-	String() string
-}
-
-type Move struct {
-	src  IPosn
-	dest IPosn
-}
-
 type GameState struct {
 	Board
 	prevBoard Board
@@ -19,6 +8,21 @@ type GameState struct {
 	activePlayer *Player
 
 	moveHistory []Move
+}
+
+func (game *GameState) calcValidMoves() []Move {
+	return nil
+}
+
+func (game *GameState) gameIsOver() bool {
+	return false
+}
+
+func (game *GameState) recentMove() Move {
+	if len(game.moveHistory) == 0 {
+		return Move{}
+	}
+	return game.moveHistory[len(game.moveHistory)-1]
 }
 
 func NewGameState() *GameState {
