@@ -1,16 +1,16 @@
 package main
 
 type Move struct {
-	src  IPosn
-	dest IPosn
+	src  StdPosn
+	dest StdPosn
 }
 
 type Game interface {
-	move(src IPosn, dest IPosn) error
-	calcValidMoves() []Move
+	move(move Move) error
+	validMoves() map[StdPosn][]StdPosn
 	getActivePlayer() int
 	gameIsOver() bool
-	recentMove() Move
+	lastMove() Move
 	String() string
 }
 

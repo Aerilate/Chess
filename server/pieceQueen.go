@@ -30,3 +30,7 @@ func (p *Queen) threats(b Board) (threats []IPosn) {
 	diagonalThreats := iterThreats(p, b, diagonalDirs())
 	return append(orthogonalThreats, diagonalThreats...)
 }
+
+func (p *Queen) validMoves(board Board, threats ChecksBoard) (dests []IPosn) {
+	return nil
+}

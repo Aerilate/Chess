@@ -45,3 +45,7 @@ func (p *Pawn) threats(b Board) (threats []IPosn) {
 	moveDir := moveDirection(p.player)
 	return []IPosn{{p.i + moveDir, p.j - 1}, {p.i + moveDir, p.j + 1}}
 }
+
+func (p *Pawn) validMoves(board Board, threats ChecksBoard) (dests []IPosn) {
+	return nil
+}

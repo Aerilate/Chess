@@ -48,3 +48,7 @@ func (p *PieceInfo) orthogonalThreats(board Board, dest IPosn) (err error) {
 func (p *Rook) threats(b Board) (threats []IPosn) {
 	return iterThreats(p, b, orthogonalDirs())
 }
+
+func (p *Rook) validMoves(board Board, threats ChecksBoard) (dests []IPosn) {
+	return nil
+}

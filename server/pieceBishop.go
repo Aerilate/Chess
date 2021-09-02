@@ -41,3 +41,7 @@ func (p *PieceInfo) diagonalThreats(board Board, dest IPosn) (err error) {
 func (p *Bishop) threats(b Board) (threats []IPosn) {
 	return iterThreats(p, b, diagonalDirs())
 }
+
+func (p *Bishop) validMoves(board Board, threats ChecksBoard) (dests []IPosn) {
+	return nil
+}

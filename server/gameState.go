@@ -8,17 +8,31 @@ type GameState struct {
 	activePlayer *Player
 
 	moveHistory []Move
+	gameOver    bool
 }
 
-func (game *GameState) calcValidMoves() []Move {
-	return nil
+func (game *GameState) validMoves() (validMoves map[StdPosn][]StdPosn) {
+	movesLeft := false
+	for piece := range game.activePlayer.pieces {
+		iMoves := piece.validMoves(game.Board, game.activePlayer.attackedSquares)
+		// convert to StdPosn
+		stdMoves := make([]StdPosn, len(iMoves))
+		for i, move := range iMoves {
+			stdMoves[i] = move.toStdPosn()
+		}
+
+		validMoves[piece.pieceInfo().IPosn.toStdPosn()] = stdMoves
+		movesLeft = movesLeft || len(iMoves) > 0
+	}
+	game.gameOver = !movesLeft
+	return validMoves
 }
 
 func (game *GameState) gameIsOver() bool {
-	return false
+	return game.gameOver
 }
 
-func (game *GameState) recentMove() Move {
+func (game *GameState) lastMove() Move {
 	if len(game.moveHistory) == 0 {
 		return Move{}
 	}
@@ -110,7 +124,10 @@ func (game *GameState) rollbackMove() {
 	game.updateChecks()
 }
 
-func (game *GameState) move(src IPosn, dest IPosn) error {
+func (game *GameState) move(move Move) error {
+	src := move.src.toIPosn()
+	dest := move.dest.toIPosn()
+
 	if !moveInBounds(src) {
 		return InvalidMove{"Source coordinate " + src.String() + " is out of range!"}
 	} else if !moveInBounds(dest) {
@@ -145,7 +162,7 @@ func (game *GameState) move(src IPosn, dest IPosn) error {
 		return InvalidMove{"King would be under check!"}
 	}
 
-	game.moveHistory = append(game.moveHistory, Move{src, dest})
+	game.moveHistory = append(game.moveHistory, Move{move.src, move.dest})
 	game.endTurn()
 	return nil
 }

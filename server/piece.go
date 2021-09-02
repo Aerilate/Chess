@@ -14,6 +14,7 @@ const (
 type Piece interface {
 	checkMove(board Board, threats ChecksBoard, dest IPosn) (err error)
 	threats(b Board) (threats []IPosn)
+	validMoves(b Board, threats ChecksBoard) (moves []IPosn)
 
 	pieceInfo() PieceInfo
 	updatePosn(posn IPosn)

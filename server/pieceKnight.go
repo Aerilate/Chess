@@ -31,3 +31,7 @@ func (p *Knight) threats(b Board) (threats []IPosn) {
 	threats = append(threats, IPosn{p.i - 1, p.j + 2}, IPosn{p.i - 1, p.j - 2})
 	return threats
 }
+
+func (p *Knight) validMoves(board Board, threats ChecksBoard) (dests []IPosn) {
+	return nil
+}
