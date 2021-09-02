@@ -10,7 +10,9 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       ws: null,
-      serverData: null
+      serverData: {
+        fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+      }
     };
     this.onMove = this.onMove.bind(this);
     this.calcMovable = this.calcMovable.bind(this);
@@ -100,6 +102,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    return <Chessground onMove={this.onMove} movable={this.calcMovable()}/>;
+    return <Chessground onMove={this.onMove} movable={this.calcMovable()} fen={this.state.serverData?.fen}/>;
   }
 }

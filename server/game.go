@@ -8,10 +8,9 @@ type Move struct {
 type Game interface {
 	validMoves() map[string][]string
 	move(move Move)
-	lastMove() Move
+	fen() string
 	getActivePlayer() int
 	isOver() bool
-	String() string
 }
 
 func NewGame() Game {

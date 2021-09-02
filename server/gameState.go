@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 type GameState struct {
 	Board
 	prevBoard Board
@@ -9,6 +11,29 @@ type GameState struct {
 
 	moveHistory []Move
 	gameOver    bool
+}
+
+func (game *GameState) fen() (s string) {
+	for _, row := range game.Board {
+		consecBlanks := 0
+		for _, piece := range row {
+			if piece != nil {
+				// add blanks before
+				if consecBlanks > 0 {
+					s += strconv.Itoa(consecBlanks)
+				}
+				consecBlanks = 0
+				s += piece.String()
+			} else {
+				consecBlanks++
+			}
+		}
+		if consecBlanks > 0 {
+			s += strconv.Itoa(consecBlanks)
+		}
+		s += "/"
+	}
+	return s[:len(s)-1] // remove last slash
 }
 
 func (game *GameState) validMoves() (validMoves map[string][]string) {
@@ -44,9 +69,8 @@ func NewGameState() *GameState {
 	newGame := &GameState{Board: *NewBoard()}
 	newGame.players[1] = Player{int: Player1}
 	newGame.players[2] = Player{int: Player2}
-	newGame.activePlayer = &newGame.players[2]
+	newGame.activePlayer = &newGame.players[1]
 	newGame.setupPieces()
-	newGame.endTurn()
 	return newGame
 }
 
@@ -92,7 +116,7 @@ func (game *GameState) move(move Move) {
 	*game.at(src) = nil
 
 	game.moveHistory = append(game.moveHistory, Move{move.src, move.dest})
-	game.endTurn()
+	game.activePlayer = game.inactivePlayer()
 }
 
 func (game GameState) inactivePlayer() *Player {
@@ -100,14 +124,6 @@ func (game GameState) inactivePlayer() *Player {
 	return &game.players[otherPlayerId]
 }
 
-func (game *GameState) endTurn() {
-	game.activePlayer = game.inactivePlayer()
-}
-
 func (game GameState) getActivePlayer() int {
 	return game.activePlayer.int
-}
-
-func (game GameState) String() string {
-	return game.Board.String()
 }
