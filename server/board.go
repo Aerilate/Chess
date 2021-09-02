@@ -54,9 +54,11 @@ func (b Board) kingUnderCheck(player int) bool {
 	kingPosn := IPosn{}
 	for _, row := range b {
 		for _, piece := range row {
-			switch piece.(type) {
-			case *King:
-				kingPosn = piece.pieceInfo().IPosn
+			if piece != nil && piece.pieceInfo().player == player {
+				switch piece.(type) {
+				case *King:
+					kingPosn = piece.pieceInfo().IPosn
+				}
 			}
 		}
 	}
