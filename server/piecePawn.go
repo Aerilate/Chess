@@ -16,7 +16,7 @@ func (p Pawn) String() string {
 	return diffPlayerPiece(pawn, p.player)
 }
 
-func (p *Pawn) threats(b Board) (threats []IPosn) {
+func (p *Pawn) threats(board Board) (threats []IPosn) {
 	moveDir := moveDirection(p.player)
 	return []IPosn{{p.i + moveDir, p.j - 1}, {p.i + moveDir, p.j + 1}}
 }

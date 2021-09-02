@@ -16,9 +16,9 @@ func (p Queen) String() string {
 	return diffPlayerPiece(queen, p.player)
 }
 
-func (p *Queen) threats(b Board) (threats []IPosn) {
-	orthogonalThreats := iterThreats(p, b, orthogonalDirs())
-	diagonalThreats := iterThreats(p, b, diagonalDirs())
+func (p *Queen) threats(board Board) (threats []IPosn) {
+	orthogonalThreats := iterThreats(p, board, orthogonalDirs())
+	diagonalThreats := iterThreats(p, board, diagonalDirs())
 	return append(orthogonalThreats, diagonalThreats...)
 }
 

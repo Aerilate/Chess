@@ -16,8 +16,8 @@ func (p Bishop) String() string {
 	return diffPlayerPiece(bishop, p.player)
 }
 
-func (p *Bishop) threats(b Board) (threats []IPosn) {
-	return iterThreats(p, b, diagonalDirs())
+func (p *Bishop) threats(board Board) (threats []IPosn) {
+	return iterThreats(p, board, diagonalDirs())
 }
 
 func (p *Bishop) validMoves(board Board) (dests []IPosn) {

@@ -16,8 +16,8 @@ func (p Rook) String() string {
 	return diffPlayerPiece(rook, p.player)
 }
 
-func (p *Rook) threats(b Board) (threats []IPosn) {
-	return iterThreats(p, b, orthogonalDirs())
+func (p *Rook) threats(board Board) (threats []IPosn) {
+	return iterThreats(p, board, orthogonalDirs())
 }
 
 func (p *Rook) validMoves(board Board) (dests []IPosn) {

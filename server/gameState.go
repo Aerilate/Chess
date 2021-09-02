@@ -108,5 +108,5 @@ func (game GameState) getActivePlayer() int {
 }
 
 func (game GameState) String() string {
-	return game.Board.String() + "\n" + game.activePlayer.attackedSquares.String()
+	return game.Board.String()
 }

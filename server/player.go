@@ -5,9 +5,8 @@ const Player2 = 2
 
 type Player struct {
 	int
-	king            *King
-	pieces          map[Piece]bool
-	attackedSquares ChecksBoard
+	king   *King
+	pieces map[Piece]bool
 }
 
 func (player *Player) NewPiece(pieceType string, posn IPosn) (p Piece) {

@@ -16,17 +16,13 @@ func (p King) String() string {
 	return diffPlayerPiece(king, p.player)
 }
 
-func (p *King) threats(b Board) (threats []IPosn) {
+func (p *King) threats(board Board) (threats []IPosn) {
 	for i := p.i - 1; i <= p.i+1; i++ {
 		for j := p.j - 1; j <= p.j+1; j++ {
 			threats = append(threats, IPosn{i, j})
 		}
 	}
 	return threats
-}
-
-func (p *King) underCheck(threats ChecksBoard) bool {
-	return threats[p.i][p.j] > 0
 }
 
 func (p *King) validMoves(board Board) (dests []IPosn) {
