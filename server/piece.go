@@ -12,9 +12,8 @@ const (
 )
 
 type Piece interface {
-	checkMove(board Board, threats ChecksBoard, dest IPosn) (err error)
 	threats(b Board) (threats []IPosn)
-	validMoves(b Board, threats ChecksBoard) (moves []IPosn)
+	validMoves(b Board) (moves []IPosn)
 
 	pieceInfo() PieceInfo
 	updatePosn(posn IPosn)
@@ -36,4 +35,25 @@ func diffPlayerPiece(s string, player int) string {
 		return strings.ToUpper(s)
 	}
 	return s
+}
+
+func filterValidMoves(dests []IPosn, piece Piece, b Board) []IPosn {
+	src := piece.pieceInfo().IPosn
+	player := piece.pieceInfo().player
+
+	destBlocked := func(p IPosn) bool {
+		return *b.at(p) != nil && (*b.at(p)).pieceInfo().player == player
+	}
+
+	kingChecked := func(p IPosn) bool {
+		copy := b.shallowCopy()
+		*copy.at(p) = *copy.at(src)
+		(*copy.at(p)).updatePosn(p)
+		*copy.at(src) = nil
+		return copy.kingUnderCheck(player)
+	}
+
+	return filter(dests, func(p IPosn) bool {
+		return moveInBounds(p) && !destBlocked(p) && !kingChecked(p)
+	})
 }

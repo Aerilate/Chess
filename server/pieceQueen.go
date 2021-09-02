@@ -16,21 +16,15 @@ func (p Queen) String() string {
 	return diffPlayerPiece(queen, p.player)
 }
 
-func (p *Queen) checkMove(board Board, threats ChecksBoard, dest IPosn) (err error) {
-	ortho := p.orthogonalThreats(board, dest)
-	diag := p.diagonalThreats(board, dest)
-	if ortho == nil || diag == nil {
-		return nil
-	}
-	return InvalidMove{"Queen can't move there."}
-}
-
 func (p *Queen) threats(b Board) (threats []IPosn) {
 	orthogonalThreats := iterThreats(p, b, orthogonalDirs())
 	diagonalThreats := iterThreats(p, b, diagonalDirs())
 	return append(orthogonalThreats, diagonalThreats...)
 }
 
-func (p *Queen) validMoves(board Board, threats ChecksBoard) (dests []IPosn) {
-	return nil
+func (p *Queen) validMoves(board Board) (dests []IPosn) {
+	orthogonalDests := iterMoves(p, board, orthogonalDirs())
+	diagonalDests := iterMoves(p, board, diagonalDirs())
+	dests = append(orthogonalDests, diagonalDests...)
+	return filterValidMoves(dests, p, board)
 }

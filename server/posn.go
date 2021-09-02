@@ -26,6 +26,15 @@ func (p IPosn) add(other IPosn) IPosn {
 	return IPosn{p.i + other.i, p.j + other.j}
 }
 
+func filter(posns []IPosn, fn func(IPosn) bool) (result []IPosn) {
+	for _, posn := range posns {
+		if fn(posn) {
+			result = append(result, posn)
+		}
+	}
+	return result
+}
+
 // StdPosn standard Chess notation
 type StdPosn struct {
 	file rune
