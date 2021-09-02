@@ -46,11 +46,5 @@ func (p StdPosn) toIPosn() IPosn {
 }
 
 func (p StdPosn) String() string {
-	return fmt.Sprintf("(%c,%d)", p.file, p.rank)
-}
-
-type BadStdPosn struct{}
-
-func (e BadStdPosn) Error() string {
-	return "Can't convert string to a coordinate!"
+	return fmt.Sprintf("%c%d", p.file, p.rank)
 }

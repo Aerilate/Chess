@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var clients Clients
@@ -23,7 +24,7 @@ type Message struct {
 func startGame() {
 	for idx, client := range clients {
 		if idx > 0 {
-			err := client.WriteMessage(1, []byte("Starting game."))
+			err := client.WriteMessage(1, []byte(`{"Starting game":[]}`))
 			if err != nil {
 				log.Println(err)
 			}
@@ -49,9 +50,13 @@ func startGame() {
 		if err != nil {
 			log.Println(err)
 		}
-		fmt.Println(string(p))
-
-		//game.move(,)
+		rank, _ := strconv.ParseInt(string(p[1]), 10, 32)
+		src := StdPosn{file: rune(p[0]), rank: int(rank)}
+		rank, _ = strconv.ParseInt(string(p[3]), 10, 32)
+		dest := StdPosn{file: rune(p[2]), rank: int(rank)}
+		move := Move{src, dest}
+		fmt.Println(src, dest)
+		game.move(move)
 	}
 }
 

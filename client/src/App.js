@@ -9,10 +9,11 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      ws: null
+      ws: null,
+      serverData: null
     };
-    this.sendMessage = this.sendMessage.bind(this);
     this.onMove = this.onMove.bind(this);
+    this.calcMovable = this.calcMovable.bind(this);
   }
 
   timeout = TIMEOUT;
@@ -28,6 +29,12 @@ export default class App extends React.Component {
 
     ws.onmessage = (ev) => {
       console.log(ev.data)
+      this.setState({
+        serverData: JSON.parse(ev.data)
+      }, () => {
+        const validMoves = this.state.serverData?.validMoves
+        console.log(validMoves)
+      })
     }
 
     ws.onopen = () => {
@@ -78,7 +85,21 @@ export default class App extends React.Component {
     }
   }
 
+  calcMovable = () => {
+    let dests = new Map()
+    const validMoves = this.state.serverData?.validMoves
+    if (validMoves) {
+      dests = new Map(Object.entries(validMoves))
+    }
+
+    return {
+      free: false,
+      dests,
+      color: "both"
+    }
+  }
+
   render() {
-    return <Chessground onMove={this.onMove} />;
+    return <Chessground onMove={this.onMove} movable={this.calcMovable()}/>;
   }
 }
