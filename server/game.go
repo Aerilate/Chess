@@ -6,11 +6,11 @@ type Move struct {
 }
 
 type Game interface {
-	move(move Move) error
 	validMoves() map[StdPosn][]StdPosn
+	move(move Move)
+	lastMove() Move
 	getActivePlayer() int
 	gameIsOver() bool
-	lastMove() Move
 	String() string
 }
 

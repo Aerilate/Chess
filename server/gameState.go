@@ -14,7 +14,7 @@ type GameState struct {
 func (game *GameState) validMoves() (validMoves map[StdPosn][]StdPosn) {
 	movesLeft := false
 	for piece := range game.activePlayer.pieces {
-		iMoves := piece.validMoves(game.Board, game.activePlayer.attackedSquares)
+		iMoves := piece.validMoves(game.Board)
 		// convert to StdPosn
 		stdMoves := make([]StdPosn, len(iMoves))
 		for i, move := range iMoves {
@@ -80,91 +80,18 @@ func (game *GameState) setupPieces() {
 	}
 }
 
-func (game *GameState) undo() {
-	movesMade := len(game.moveHistory)
-	if movesMade == 0 {
-		return
-	}
-	game.Board = game.prevBoard
-	game.moveHistory = game.moveHistory[:movesMade-1]
-}
-
-func calcThreats(board Board, player int) []IPosn {
-	threats := make([]IPosn, 0)
-	for i := 0; i < len(board); i++ {
-		for j := 0; j < len(board[0]); j++ {
-			if board[i][j] != nil && board[i][j].pieceInfo().player != player {
-				threats = append(threats, board[i][j].threats(board)...)
-			}
-		}
-	}
-	return threats
-}
-
-func (game *GameState) updateChecks() {
-	game.activePlayer.attackedSquares = *NewChecksBoard() // clear board
-	threats := calcThreats(game.Board, game.activePlayer.int)
-	for _, posn := range threats {
-		if moveInBounds(posn) { // filter
-			game.activePlayer.attackedSquares[posn.i][posn.j]++
-		}
-	}
-}
-
-func (game *GameState) rollbackMove() {
-	game.Board = game.prevBoard
-	for i := range game.Board {
-		for j := range game.Board[0] {
-			posn := IPosn{i, j}
-			if *game.Board.at(posn) != nil {
-				(*game.Board.at(posn)).updatePosn(posn)
-			}
-		}
-	}
-	game.updateChecks()
-}
-
-func (game *GameState) move(move Move) error {
+func (game *GameState) move(move Move) {
 	src := move.src.toIPosn()
 	dest := move.dest.toIPosn()
 
-	if !moveInBounds(src) {
-		return InvalidMove{"Source coordinate " + src.String() + " is out of range!"}
-	} else if !moveInBounds(dest) {
-		return InvalidMove{"Destination coordinate " + dest.String() + " is out of range!"}
-	} else if src == dest {
-		return InvalidMove{"Source and destination coordinates can't be the same!"}
-	}
-
+	// update board
 	piece := *game.at(src)
-	if piece == nil { // check piece exists at src
-		return InvalidMove{"Coordinate " + src.String() + " has no piece!"}
-	} else if piece.pieceInfo().player != game.activePlayer.int {
-		return NotYourPiece{}
-	} else if *game.at(dest) != nil && piece.pieceInfo().player == (*game.at(dest)).pieceInfo().player { // check if dest occupied by own piece
-		return InvalidMove{"Coordinate " + dest.String() + " is occupied by your own piece!"}
-	}
-
-	// check piece can move to dest
-	err := piece.checkMove(game.Board, game.activePlayer.attackedSquares, dest)
-	if err != nil {
-		return err
-	}
-
-	game.prevBoard = game.Board.shallowCopy()
 	*game.at(dest) = piece
 	piece.updatePosn(dest)
 	*game.at(src) = nil
 
-	game.updateChecks()
-	if game.activePlayer.king.underCheck(game.activePlayer.attackedSquares) {
-		game.rollbackMove()
-		return InvalidMove{"King would be under check!"}
-	}
-
 	game.moveHistory = append(game.moveHistory, Move{move.src, move.dest})
 	game.endTurn()
-	return nil
 }
 
 func (game GameState) inactivePlayer() *Player {
@@ -174,7 +101,6 @@ func (game GameState) inactivePlayer() *Player {
 
 func (game *GameState) endTurn() {
 	game.activePlayer = game.inactivePlayer()
-	game.updateChecks()
 }
 
 func (game GameState) getActivePlayer() int {

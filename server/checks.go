@@ -4,13 +4,32 @@ import "fmt"
 
 type ChecksBoard [][]uint
 
-func NewChecksBoard() *ChecksBoard {
+func NewChecksBoard() ChecksBoard {
 	board := make([][]uint, BoardSize, BoardSize)
 
 	for i := 0; i < BoardSize; i++ {
 		board[i] = make([]uint, BoardSize, BoardSize)
 	}
-	return (*ChecksBoard)(&board)
+	return board
+}
+
+func calcChecksFromBoard(board Board, player int) ChecksBoard {
+	threats := make([]IPosn, 0)
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[0]); j++ {
+			if board[i][j] != nil && board[i][j].pieceInfo().player != player {
+				threats = append(threats, board[i][j].threats(board)...)
+			}
+		}
+	}
+
+	checks := NewChecksBoard() // clear board
+	for _, posn := range threats {
+		if moveInBounds(posn) { // filter
+			checks[posn.i][posn.j]++
+		}
+	}
+	return checks
 }
 
 func (b *ChecksBoard) squareIsSafe(p IPosn) bool {

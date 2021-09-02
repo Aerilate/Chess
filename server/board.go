@@ -46,6 +46,20 @@ func (b Board) String() string {
 	return str
 }
 
+func (b Board) kingUnderCheck(player int) bool {
+	kingPosn := IPosn{}
+	for _, row := range b {
+		for _, piece := range row {
+			switch piece.(type) {
+			case *King:
+				kingPosn = piece.pieceInfo().IPosn
+			}
+		}
+	}
+	checks := calcChecksFromBoard(b, player)
+	return !checks.squareIsSafe(kingPosn)
+}
+
 func (b Board) shallowCopy() Board {
 	boardCopy := *NewBoard()
 	for i := range b {

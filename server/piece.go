@@ -37,23 +37,23 @@ func diffPlayerPiece(s string, player int) string {
 	return s
 }
 
-func filterValidMoves(dests []IPosn, piece Piece, b Board) []IPosn {
+func filterValidMoves(dests []IPosn, piece Piece, board Board) []IPosn {
 	src := piece.pieceInfo().IPosn
 	player := piece.pieceInfo().player
 
-	destBlocked := func(p IPosn) bool {
-		return *b.at(p) != nil && (*b.at(p)).pieceInfo().player == player
+	destCapturable := func(dest IPosn) bool {
+		return *board.at(dest) == nil || areEnemies(*board.at(dest), piece)
 	}
 
-	kingChecked := func(p IPosn) bool {
-		copy := b.shallowCopy()
-		*copy.at(p) = *copy.at(src)
-		(*copy.at(p)).updatePosn(p)
+	kingChecked := func(dest IPosn) bool {
+		copy := board.shallowCopy()
+		*copy.at(dest) = *copy.at(src)
+		(*copy.at(dest)).updatePosn(dest)
 		*copy.at(src) = nil
 		return copy.kingUnderCheck(player)
 	}
 
 	return filter(dests, func(p IPosn) bool {
-		return moveInBounds(p) && !destBlocked(p) && !kingChecked(p)
+		return moveInBounds(p) && destCapturable(p) && !kingChecked(p)
 	})
 }
