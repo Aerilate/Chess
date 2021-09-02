@@ -16,8 +16,8 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	ValidMoves map[StdPosn][]StdPosn `json:"validMoves"`
-	RecentMove Move                  `json:"lastMove"`
+	ValidMoves map[string][]string `json:"validMoves"`
+	RecentMove Move                `json:"lastMove"`
 }
 
 func startGame() {
@@ -31,13 +31,15 @@ func startGame() {
 	}
 
 	game := NewGame()
-	for !game.gameIsOver() {
+	for !game.isOver() {
 		activePlayer := clients[game.getActivePlayer()]
-
-		// send prelim info over
 		msg := Message{game.validMoves(), game.lastMove()}
-		jsonMsg, _ := json.MarshalIndent(msg, "", "  ")
-		err := activePlayer.WriteMessage(1, jsonMsg)
+		jsonMsg, err := json.MarshalIndent(msg, "", "  ")
+		if err != nil {
+			log.Println(err)
+		}
+
+		err = activePlayer.WriteMessage(1, jsonMsg)
 		if err != nil {
 			log.Println(err)
 		}
@@ -49,7 +51,7 @@ func startGame() {
 		}
 		fmt.Println(string(p))
 
-		// game.move(,)
+		//game.move(,)
 	}
 }
 

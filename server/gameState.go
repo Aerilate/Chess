@@ -11,24 +11,25 @@ type GameState struct {
 	gameOver    bool
 }
 
-func (game *GameState) validMoves() (validMoves map[StdPosn][]StdPosn) {
+func (game *GameState) validMoves() (validMoves map[string][]string) {
+	validMoves = make(map[string][]string)
 	movesLeft := false
 	for piece := range game.activePlayer.pieces {
 		iMoves := piece.validMoves(game.Board)
 		// convert to StdPosn
-		stdMoves := make([]StdPosn, len(iMoves))
+		stdMoves := make([]string, len(iMoves))
 		for i, move := range iMoves {
-			stdMoves[i] = move.toStdPosn()
+			stdMoves[i] = move.toStdPosn().String()
 		}
 
-		validMoves[piece.pieceInfo().IPosn.toStdPosn()] = stdMoves
+		validMoves[piece.pieceInfo().IPosn.toStdPosn().String()] = stdMoves
 		movesLeft = movesLeft || len(iMoves) > 0
 	}
 	game.gameOver = !movesLeft
 	return validMoves
 }
 
-func (game *GameState) gameIsOver() bool {
+func (game *GameState) isOver() bool {
 	return game.gameOver
 }
 

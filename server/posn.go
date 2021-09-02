@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"regexp"
-	"strconv"
 )
 
 // IPosn slice coordinates representation
@@ -39,17 +37,6 @@ func filter(posns []IPosn, fn func(IPosn) bool) (result []IPosn) {
 type StdPosn struct {
 	file rune
 	rank int
-}
-
-func toStdPosn(s string) (*StdPosn, error) {
-	moveRegex, _ := regexp.Compile("[a-h][0-7]")
-	if !moveRegex.MatchString(s) {
-		return nil, BadStdPosn{}
-	}
-
-	file := rune(s[0])
-	rank, _ := strconv.Atoi(string(s[1]))
-	return &StdPosn{file, rank}, nil
 }
 
 func (p StdPosn) toIPosn() IPosn {

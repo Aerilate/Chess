@@ -27,8 +27,8 @@ func (p *Pawn) validMoves(board Board) (dests []IPosn) {
 
 	oneAhead := IPosn{p.i + moveDir, p.j}
 	if p.i == pawnRow {
-		if board.at(oneAhead) == nil { // can go two ahead
-			dests = append(dests, oneAhead.add(IPosn{1, 0}))
+		if board.squareIsEmpty(oneAhead) { // can go two ahead
+			dests = append(dests, IPosn{p.i + 2*moveDir, p.j})
 		}
 	}
 	dests = append(dests, oneAhead)
@@ -36,10 +36,10 @@ func (p *Pawn) validMoves(board Board) (dests []IPosn) {
 	// capturable squares
 	diagLeft := IPosn{p.i + moveDir, p.j - 1}
 	diagRight := IPosn{p.i + moveDir, p.j + 1}
-	if moveInBounds(diagLeft) && areEnemies(*board.at(diagLeft), p) {
+	if moveInBounds(diagLeft) && areEnemies(p, *board.at(diagLeft)) {
 		dests = append(dests, diagLeft)
 	}
-	if moveInBounds(diagRight) && areEnemies(*board.at(diagRight), p) {
+	if moveInBounds(diagRight) && areEnemies(p, *board.at(diagRight)) {
 		dests = append(dests, diagRight)
 	}
 	return filterValidMoves(dests, p, board)

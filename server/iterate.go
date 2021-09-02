@@ -14,7 +14,7 @@ func iterThreats(p Piece, b Board, incs []IPosn) (threats []IPosn) {
 		curr = curr.add(inc) // exclude piece position itself
 		for moveInBounds(curr) {
 			threats = append(threats, curr)
-			if *b.at(curr) != nil { // piece at edge of threat
+			if !b.squareIsEmpty(curr) { // piece at edge of threat
 				break
 			}
 			curr = curr.add(inc)
@@ -28,7 +28,7 @@ func iterMoves(p Piece, b Board, incs []IPosn) (dests []IPosn) {
 		curr := p.pieceInfo().IPosn
 		curr = curr.add(inc) // exclude piece position itself
 		for moveInBounds(curr) {
-			if *b.at(curr) != nil {
+			if !b.squareIsEmpty(curr) {
 				destPlayer := (*b.at(curr)).pieceInfo().player
 				if destPlayer != p.pieceInfo().player { // opponent piece can be captured
 					dests = append(dests, curr)

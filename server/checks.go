@@ -23,7 +23,7 @@ func calcChecksFromBoard(board Board, player int) ChecksBoard {
 		}
 	}
 
-	checks := NewChecksBoard() // clear board
+	checks := NewChecksBoard()
 	for _, posn := range threats {
 		if moveInBounds(posn) { // filter
 			checks[posn.i][posn.j]++

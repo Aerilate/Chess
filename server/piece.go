@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 const (
 	pawn   = "p"
@@ -26,7 +28,7 @@ type PieceInfo struct {
 }
 
 func areEnemies(p1 Piece, p2 Piece) bool {
-	return p2 != nil && p1.pieceInfo().player != p2.pieceInfo().player
+	return p1 != nil && p2 != nil && p1.pieceInfo().player != p2.pieceInfo().player
 }
 
 // fn to differentiate player pieces
@@ -42,13 +44,13 @@ func filterValidMoves(dests []IPosn, piece Piece, board Board) []IPosn {
 	player := piece.pieceInfo().player
 
 	destCapturable := func(dest IPosn) bool {
-		return *board.at(dest) == nil || areEnemies(*board.at(dest), piece)
+		return board.squareIsEmpty(dest) || areEnemies(*board.at(dest), piece)
 	}
 
 	kingChecked := func(dest IPosn) bool {
 		copy := board.shallowCopy()
 		*copy.at(dest) = *copy.at(src)
-		(*copy.at(dest)).updatePosn(dest)
+		// do not update piece posn since we're working with a shallow copy of the piece
 		*copy.at(src) = nil
 		return copy.kingUnderCheck(player)
 	}

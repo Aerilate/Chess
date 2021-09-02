@@ -20,6 +20,10 @@ func (b *Board) at(p IPosn) *Piece {
 	return &(*b)[p.i][p.j]
 }
 
+func (b *Board) squareIsEmpty(p IPosn) bool {
+	return (*b)[p.i][p.j] == nil
+}
+
 func (b Board) String() string {
 	addBorder := func(str *string) {
 		*str += "O"
