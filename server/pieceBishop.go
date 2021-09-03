@@ -17,10 +17,10 @@ func (p Bishop) String() string {
 }
 
 func (p *Bishop) threats(board Board) (threats []IPosn) {
-	return iterThreats(p, board, diagonalDirs())
+	return iterThreats(p, board, diagonalDirs)
 }
 
 func (p *Bishop) validMoves(board Board) (dests []IPosn) {
-	dests = iterMoves(p, board, diagonalDirs())
+	dests = iterMoves(p, board, diagonalDirs)
 	return filterValidMoves(dests, p, board)
 }

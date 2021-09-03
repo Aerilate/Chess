@@ -24,6 +24,16 @@ func (b *Board) squareIsEmpty(p IPosn) bool {
 	return (*b)[p.i][p.j] == nil
 }
 
+func (b Board) shallowCopy() Board {
+	boardCopy := *NewBoard()
+	for i := range b {
+		for j := range b[0] {
+			boardCopy[i][j] = b[i][j]
+		}
+	}
+	return boardCopy
+}
+
 func (b Board) String() string {
 	addBorder := func(str *string) {
 		*str += "O"
@@ -48,30 +58,4 @@ func (b Board) String() string {
 	}
 	addBorder(&str)
 	return str
-}
-
-func (b Board) kingUnderCheck(player int) bool {
-	kingPosn := IPosn{}
-	for _, row := range b {
-		for _, piece := range row {
-			if piece != nil && piece.pieceInfo().player == player {
-				switch piece.(type) {
-				case *King:
-					kingPosn = piece.pieceInfo().IPosn
-				}
-			}
-		}
-	}
-	checks := calcChecksFromBoard(b, player)
-	return !checks.squareIsSafe(kingPosn)
-}
-
-func (b Board) shallowCopy() Board {
-	boardCopy := *NewBoard()
-	for i := range b {
-		for j := range b[0] {
-			boardCopy[i][j] = b[i][j]
-		}
-	}
-	return boardCopy
 }

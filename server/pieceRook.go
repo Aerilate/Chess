@@ -17,10 +17,10 @@ func (p Rook) String() string {
 }
 
 func (p *Rook) threats(board Board) (threats []IPosn) {
-	return iterThreats(p, board, orthogonalDirs())
+	return iterThreats(p, board, orthogonalDirs)
 }
 
 func (p *Rook) validMoves(board Board) (dests []IPosn) {
-	dests = iterMoves(p, board, orthogonalDirs())
+	dests = iterMoves(p, board, orthogonalDirs)
 	return filterValidMoves(dests, p, board)
 }

@@ -17,14 +17,14 @@ func (p Queen) String() string {
 }
 
 func (p *Queen) threats(board Board) (threats []IPosn) {
-	orthogonalThreats := iterThreats(p, board, orthogonalDirs())
-	diagonalThreats := iterThreats(p, board, diagonalDirs())
+	orthogonalThreats := iterThreats(p, board, orthogonalDirs)
+	diagonalThreats := iterThreats(p, board, diagonalDirs)
 	return append(orthogonalThreats, diagonalThreats...)
 }
 
 func (p *Queen) validMoves(board Board) (dests []IPosn) {
-	orthogonalDests := iterMoves(p, board, orthogonalDirs())
-	diagonalDests := iterMoves(p, board, diagonalDirs())
+	orthogonalDests := iterMoves(p, board, orthogonalDirs)
+	diagonalDests := iterMoves(p, board, diagonalDirs)
 	dests = append(orthogonalDests, diagonalDests...)
 	return filterValidMoves(dests, p, board)
 }

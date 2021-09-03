@@ -1,12 +1,8 @@
 package main
 
-func orthogonalDirs() []IPosn {
-	return []IPosn{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
-}
+var orthogonalDirs = []IPosn{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 
-func diagonalDirs() []IPosn {
-	return []IPosn{{1, 1}, {-1, 1}, {1, -1}, {-1, -1}}
-}
+var diagonalDirs = []IPosn{{1, 1}, {-1, 1}, {1, -1}, {-1, -1}}
 
 func iterThreats(p Piece, b Board, incs []IPosn) (threats []IPosn) {
 	for _, inc := range incs {

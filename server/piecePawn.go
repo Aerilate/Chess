@@ -21,6 +21,16 @@ func (p *Pawn) threats(board Board) (threats []IPosn) {
 	return []IPosn{{p.i + moveDir, p.j - 1}, {p.i + moveDir, p.j + 1}}
 }
 
+// maps 1->6 and 2->1
+func pawnHomeRow(player int) int {
+	return (BoardSize/2+1)*(2-player) + 1
+}
+
+// maps 1->-1 and 2->1
+func moveDirection(player int) int {
+	return player*2 - 3
+}
+
 func (p *Pawn) validMoves(board Board) (dests []IPosn) {
 	pawnRow := pawnHomeRow(p.player)
 	moveDir := moveDirection(p.player)

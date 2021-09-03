@@ -33,7 +33,7 @@ func startGame() {
 
 	game := NewGame()
 	for !game.isOver() {
-		activePlayer := clients[game.getActivePlayer()]
+		activePlayer := clients[game.ActivePlayer()]
 		msg := Message{game.validMoves(), game.fen()}
 		jsonMsg, err := json.MarshalIndent(msg, "", "  ")
 		if err != nil {
