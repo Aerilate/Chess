@@ -24,7 +24,7 @@ func (p Knight) threats(board Board) (threats []IPosn) {
 	return threats
 }
 
-func (p Knight) validMoves(board Board) (dests []IPosn) {
+func (p Knight) validDests(board Board) (dests []IPosn) {
 	dests = p.threats(board)
 	return filterValidMoves(dests, p, board)
 }

@@ -6,13 +6,11 @@ type ChecksBoard [][]uint
 
 func kingUnderCheck(board Board, player int) bool {
 	kingPosn := IPosn{}
-	for _, row := range board {
-		for _, piece := range row {
-			if piece != nil && piece.pieceInfo().player == player {
-				switch piece.(type) {
-				case *King:
-					kingPosn = piece.pieceInfo().IPosn
-				}
+	for _, piece := range board.pieces() {
+		if piece.pieceInfo().player == player {
+			switch piece.(type) {
+			case *King:
+				kingPosn = piece.pieceInfo().IPosn
 			}
 		}
 	}

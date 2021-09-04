@@ -22,7 +22,7 @@ func (p Queen) threats(board Board) (threats []IPosn) {
 	return append(orthogonalThreats, diagonalThreats...)
 }
 
-func (p Queen) validMoves(board Board) (dests []IPosn) {
+func (p Queen) validDests(board Board) (dests []IPosn) {
 	orthogonalDests := iterMoves(p, board, orthogonalDirs)
 	diagonalDests := iterMoves(p, board, diagonalDirs)
 	dests = append(orthogonalDests, diagonalDests...)

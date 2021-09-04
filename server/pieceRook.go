@@ -20,7 +20,7 @@ func (p Rook) threats(board Board) (threats []IPosn) {
 	return iterThreats(p, board, orthogonalDirs)
 }
 
-func (p Rook) validMoves(board Board) (dests []IPosn) {
+func (p Rook) validDests(board Board) (dests []IPosn) {
 	dests = iterMoves(p, board, orthogonalDirs)
 	return filterValidMoves(dests, p, board)
 }

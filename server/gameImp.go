@@ -1,7 +1,5 @@
 package main
 
-import "strconv"
-
 const Player1 = 1
 const Player2 = 2
 
@@ -12,7 +10,7 @@ type GameImp struct {
 }
 
 func NewGameState() *GameImp {
-	newGame := &GameImp{Board: *NewBoard()}
+	newGame := &GameImp{Board: NewBoard()}
 	newGame.activePlayer = Player1
 	newGame.setupPieces()
 	return newGame
@@ -21,29 +19,31 @@ func NewGameState() *GameImp {
 func (game *GameImp) setupPieces() {
 	for i := 0; i < BoardSize; i++ {
 		for j := 0; j < BoardSize; j++ {
-			slot := &game.Board[i][j]
 			player := Player1
 			if i == 0 || i == 1 {
 				player = Player2
 			}
-			info := PieceInfo{player: player, IPosn: IPosn{i, j}}
+			posn := IPosn{i, j}
+			info := PieceInfo{player: player, IPosn: posn}
 
+			var piece Piece
 			if i == 0 || i == 7 {
 				switch j {
 				case 0, 7:
-					*slot = NewPiece(rook, info)
+					piece = NewPiece(rook, info)
 				case 1, 6:
-					*slot = NewPiece(knight, info)
+					piece = NewPiece(knight, info)
 				case 2, 5:
-					*slot = NewPiece(bishop, info)
+					piece = NewPiece(bishop, info)
 				case 3:
-					*slot = NewPiece(queen, info)
+					piece = NewPiece(queen, info)
 				case 4:
-					*slot = NewPiece(king, info)
+					piece = NewPiece(king, info)
 				}
 			} else if i == 1 || i == 6 {
-				*slot = NewPiece(pawn, info)
+				piece = NewPiece(pawn, info)
 			}
+			game.setSquare(posn, piece)
 		}
 	}
 }
@@ -52,20 +52,18 @@ func (game *GameImp) validMoves() (validMoves map[string][]string) {
 	validMoves = make(map[string][]string)
 	movesLeft := false
 
-	for _, row := range game.Board {
-		for _, piece := range row {
-			if piece.pieceInfo().player == game.activePlayer {
-				iMoves := piece.validMoves(game.Board)
+	for _, piece := range game.pieces() {
+		if piece.pieceInfo().player == game.activePlayer {
+			iMoves := piece.validDests(game.Board)
 
-				// convert to StdPosn
-				stdMoves := make([]string, len(iMoves))
-				for i, move := range iMoves {
-					stdMoves[i] = move.toStdPosn().String()
-				}
-
-				validMoves[piece.pieceInfo().IPosn.toStdPosn().String()] = stdMoves
-				movesLeft = movesLeft || len(iMoves) > 0
+			// convert to StdPosn
+			stdMoves := make([]string, len(iMoves))
+			for i, move := range iMoves {
+				stdMoves[i] = move.toStdPosn().String()
 			}
+
+			validMoves[piece.pieceInfo().IPosn.toStdPosn().String()] = stdMoves
+			movesLeft = movesLeft || len(iMoves) > 0
 		}
 	}
 
@@ -95,24 +93,5 @@ func (game *GameImp) isOver() bool {
 }
 
 func (game *GameImp) fen() (s string) {
-	for _, row := range game.Board {
-		consecBlanks := 0
-		for _, piece := range row {
-			if piece != nil {
-				// add blanks before
-				if consecBlanks > 0 {
-					s += strconv.Itoa(consecBlanks)
-				}
-				consecBlanks = 0
-				s += piece.String()
-			} else {
-				consecBlanks++
-			}
-		}
-		if consecBlanks > 0 {
-			s += strconv.Itoa(consecBlanks)
-		}
-		s += "/"
-	}
-	return s[:len(s)-1] // remove last slash
+	return game.Board.fen()
 }

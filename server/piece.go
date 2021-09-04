@@ -14,8 +14,8 @@ const (
 )
 
 type Piece interface {
-	threats(b Board) (threats []IPosn)
-	validMoves(b Board) (moves []IPosn)
+	threats(board Board) (threats []IPosn)
+	validDests(board Board) (dests []IPosn)
 
 	pieceInfo() PieceInfo
 	updatePosn(posn IPosn)

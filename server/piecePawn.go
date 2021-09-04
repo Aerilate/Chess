@@ -31,7 +31,7 @@ func moveDirection(player int) int {
 	return player*2 - 3
 }
 
-func (p Pawn) validMoves(board Board) (dests []IPosn) {
+func (p Pawn) validDests(board Board) (dests []IPosn) {
 	pawnRow := pawnHomeRow(p.player)
 	moveDir := moveDirection(p.player)
 

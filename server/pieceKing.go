@@ -25,7 +25,7 @@ func (p King) threats(board Board) (threats []IPosn) {
 	return threats
 }
 
-func (p King) validMoves(board Board) (dests []IPosn) {
+func (p King) validDests(board Board) (dests []IPosn) {
 	for i := p.i - 1; i <= p.i+1; i++ {
 		for j := p.j - 1; j <= p.j+1; j++ {
 			dests = append(dests, IPosn{i, j})
