@@ -1,16 +1,16 @@
 package main
 
+type Game interface {
+	ValidMoves() map[string][]string
+	Move(move Move)
+	ActivePlayer() int
+	IsOver() bool
+	Fen() string
+}
+
 type Move struct {
 	src  StdPosn
 	dest StdPosn
-}
-
-type Game interface {
-	validMoves() map[string][]string
-	move(move Move)
-	ActivePlayer() int
-	isOver() bool
-	fen() string
 }
 
 func NewGame() Game {

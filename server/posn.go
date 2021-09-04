@@ -10,6 +10,11 @@ type IPosn struct {
 	j int
 }
 
+func (p *IPosn) add(other IPosn) {
+	p.i += other.i
+	p.j += other.j
+}
+
 func (p IPosn) toStdPosn() StdPosn {
 	file := p.j + 'a'
 	rank := BoardSize - p.i
@@ -18,19 +23,6 @@ func (p IPosn) toStdPosn() StdPosn {
 
 func (p IPosn) String() string {
 	return fmt.Sprintf("(%d,%d)", p.i, p.j)
-}
-
-func (p IPosn) add(other IPosn) IPosn {
-	return IPosn{p.i + other.i, p.j + other.j}
-}
-
-func filter(posns []IPosn, fn func(IPosn) bool) (result []IPosn) {
-	for _, posn := range posns {
-		if fn(posn) {
-			result = append(result, posn)
-		}
-	}
-	return result
 }
 
 // StdPosn standard Chess notation

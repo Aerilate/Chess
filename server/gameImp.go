@@ -10,8 +10,7 @@ type GameImp struct {
 }
 
 func NewGameState() *GameImp {
-	newGame := &GameImp{Board: NewBoard()}
-	newGame.activePlayer = Player1
+	newGame := &GameImp{Board: NewBoard(), activePlayer: Player1}
 	newGame.setupPieces()
 	return newGame
 }
@@ -48,7 +47,7 @@ func (game *GameImp) setupPieces() {
 	}
 }
 
-func (game *GameImp) validMoves() (validMoves map[string][]string) {
+func (game *GameImp) ValidMoves() (validMoves map[string][]string) {
 	validMoves = make(map[string][]string)
 	movesLeft := false
 
@@ -71,7 +70,7 @@ func (game *GameImp) validMoves() (validMoves map[string][]string) {
 	return validMoves
 }
 
-func (game *GameImp) move(move Move) {
+func (game *GameImp) Move(move Move) {
 	src := move.src.toIPosn()
 	dest := move.dest.toIPosn()
 
@@ -88,10 +87,10 @@ func (game GameImp) ActivePlayer() int {
 	return game.activePlayer
 }
 
-func (game *GameImp) isOver() bool {
+func (game *GameImp) IsOver() bool {
 	return game.gameOver
 }
 
-func (game *GameImp) fen() (s string) {
+func (game *GameImp) Fen() (s string) {
 	return game.Board.fen()
 }

@@ -32,9 +32,9 @@ func startGame() {
 	}
 
 	game := NewGame()
-	for !game.isOver() {
+	for !game.IsOver() {
 		activePlayer := clients[game.ActivePlayer()]
-		msg := Message{game.validMoves(), game.fen()}
+		msg := Message{game.ValidMoves(), game.Fen()}
 		jsonMsg, err := json.MarshalIndent(msg, "", "  ")
 		if err != nil {
 			log.Println(err)
@@ -56,7 +56,7 @@ func startGame() {
 		dest := StdPosn{file: rune(p[2]), rank: int(rank)}
 		move := Move{src, dest}
 		fmt.Println(src, dest)
-		game.move(move)
+		game.Move(move)
 	}
 }
 
