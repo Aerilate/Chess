@@ -21,9 +21,11 @@ func (p Pawn) threats(board Board) (threats []IPosn) {
 	return []IPosn{{p.i + moveDir, p.j - 1}, {p.i + moveDir, p.j + 1}}
 }
 
-// maps 1->6 and 2->1
 func pawnHomeRow(player int) int {
-	return (BoardSize/2+1)*(2-player) + 1
+	if player == Player1 {
+		return 6
+	}
+	return 1
 }
 
 // maps 1->-1 and 2->1
@@ -36,10 +38,8 @@ func (p Pawn) validDests(board Board) (dests []IPosn) {
 	moveDir := moveDirection(p.player)
 
 	oneAhead := IPosn{p.i + moveDir, p.j}
-	if p.i == pawnRow {
-		if board.squareIsEmpty(oneAhead) { // can go two ahead
-			dests = append(dests, IPosn{p.i + 2*moveDir, p.j})
-		}
+	if p.i == pawnRow && board.squareIsEmpty(oneAhead) {
+		dests = append(dests, IPosn{p.i + 2*moveDir, p.j}) // can go two ahead
 	}
 	dests = append(dests, oneAhead)
 

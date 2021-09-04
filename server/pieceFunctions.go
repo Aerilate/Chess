@@ -22,17 +22,18 @@ func iterThreats(srcPiece Piece, board Board, incs []IPosn) (threats []IPosn) {
 
 func iterMoves(srcPiece Piece, board Board, incs []IPosn) (dests []IPosn) {
 	for _, inc := range incs {
-		curr := srcPiece.pieceInfo().IPosn
-		curr.add(inc) // exclude piece position itself
-		for moveInBounds(curr) {
-			if !board.squareIsEmpty(curr) {
-				if areEnemies(board.at(curr), srcPiece) { // opponent piece can be captured
-					dests = append(dests, curr)
-				}
+		dest := srcPiece.pieceInfo().IPosn
+		dest.add(inc) // exclude piece position itself
+		for moveInBounds(dest) {
+			if areFriends(board.at(dest), srcPiece) {
 				break // line of sight ends
 			}
-			dests = append(dests, curr)
-			curr.add(inc)
+
+			dests = append(dests, dest) // can move to dest
+			if board.squareIsEmpty(dest) || areEnemies(board.at(dest), srcPiece) {
+				break // can't move past enemy piece
+			}
+			dest.add(inc)
 		}
 	}
 	return dests
@@ -60,6 +61,10 @@ func filterValidMoves(dests []IPosn, piece Piece, board Board) (result []IPosn) 
 		}
 	}
 	return result
+}
+
+func areFriends(p1 Piece, p2 Piece) bool {
+	return p1 != nil && p2 != nil && p1.pieceInfo().player == p2.pieceInfo().player
 }
 
 func areEnemies(p1 Piece, p2 Piece) bool {

@@ -26,7 +26,10 @@ func (game *GameImp) setupPieces() {
 			info := PieceInfo{player: player, IPosn: posn}
 
 			var piece Piece
-			if i == 0 || i == 7 {
+			switch i {
+			case 1, 6:
+				piece = NewPiece(pawn, info)
+			case 0, 7:
 				switch j {
 				case 0, 7:
 					piece = NewPiece(rook, info)
@@ -39,8 +42,6 @@ func (game *GameImp) setupPieces() {
 				case 4:
 					piece = NewPiece(king, info)
 				}
-			} else if i == 1 || i == 6 {
-				piece = NewPiece(pawn, info)
 			}
 			game.setSquare(posn, piece)
 		}
