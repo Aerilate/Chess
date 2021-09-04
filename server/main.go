@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-var clients Clients
+var clients ClientHub
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
