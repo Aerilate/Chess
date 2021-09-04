@@ -4,13 +4,13 @@ var orthogonalDirs = []IPosn{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 
 var diagonalDirs = []IPosn{{1, 1}, {-1, 1}, {1, -1}, {-1, -1}}
 
-func iterThreats(p Piece, b Board, incs []IPosn) (threats []IPosn) {
+func iterThreats(srcPiece Piece, board Board, incs []IPosn) (threats []IPosn) {
 	for _, inc := range incs {
-		curr := p.pieceInfo().IPosn
+		curr := srcPiece.pieceInfo().IPosn
 		curr = curr.add(inc) // exclude piece position itself
 		for moveInBounds(curr) {
 			threats = append(threats, curr)
-			if !b.squareIsEmpty(curr) { // piece at edge of threat
+			if !board.squareIsEmpty(curr) { // piece at edge of threat
 				break
 			}
 			curr = curr.add(inc)
@@ -19,14 +19,13 @@ func iterThreats(p Piece, b Board, incs []IPosn) (threats []IPosn) {
 	return threats
 }
 
-func iterMoves(p Piece, b Board, incs []IPosn) (dests []IPosn) {
+func iterMoves(srcPiece Piece, board Board, incs []IPosn) (dests []IPosn) {
 	for _, inc := range incs {
-		curr := p.pieceInfo().IPosn
+		curr := srcPiece.pieceInfo().IPosn
 		curr = curr.add(inc) // exclude piece position itself
 		for moveInBounds(curr) {
-			if !b.squareIsEmpty(curr) {
-				destPlayer := (*b.at(curr)).pieceInfo().player
-				if destPlayer != p.pieceInfo().player { // opponent piece can be captured
+			if !board.squareIsEmpty(curr) {
+				if areEnemies(board.at(curr), srcPiece) { // opponent piece can be captured
 					dests = append(dests, curr)
 				}
 				break // line of sight ends

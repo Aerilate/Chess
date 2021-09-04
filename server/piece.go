@@ -30,17 +30,17 @@ type PieceInfo struct {
 func NewPiece(pieceType string, info PieceInfo) (p Piece) {
 	switch pieceType {
 	case pawn:
-		p = &Pawn{info}
+		p = Pawn{info}
 	case knight:
-		p = &Knight{info}
+		p = Knight{info}
 	case bishop:
-		p = &Bishop{info}
+		p = Bishop{info}
 	case rook:
-		p = &Rook{info}
+		p = Rook{info}
 	case queen:
-		p = &Queen{info}
+		p = Queen{info}
 	case king:
-		p = &King{info}
+		p = King{info}
 	}
 	return p
 }
@@ -62,15 +62,14 @@ func filterValidMoves(dests []IPosn, piece Piece, board Board) []IPosn {
 	player := piece.pieceInfo().player
 
 	destCapturable := func(dest IPosn) bool {
-		return board.squareIsEmpty(dest) || areEnemies(*board.at(dest), piece)
+		return board.squareIsEmpty(dest) || areEnemies(board.at(dest), piece)
 	}
 
 	kingChecked := func(dest IPosn) bool {
-		copy := board.shallowCopy()
-		*copy.at(dest) = *copy.at(src)
-		// do not update piece posn since we're working with a shallow copy of the piece
-		*copy.at(src) = nil
-		return kingUnderCheck(copy, player)
+		boardCopy := board.deepCopy()
+		boardCopy.setSquare(dest, boardCopy.at(src))
+		boardCopy.setSquare(src, nil)
+		return kingUnderCheck(boardCopy, player)
 	}
 
 	return filter(dests, func(p IPosn) bool {

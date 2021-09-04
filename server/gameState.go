@@ -19,8 +19,8 @@ func NewGameState() *GameImp {
 }
 
 func (game *GameImp) setupPieces() {
-	for i := 0; i < len(game.Board); i++ {
-		for j := 0; j < len(game.Board[0]); j++ {
+	for i := 0; i < BoardSize; i++ {
+		for j := 0; j < BoardSize; j++ {
 			slot := &game.Board[i][j]
 			player := Player1
 			if i == 0 || i == 1 {
@@ -78,10 +78,10 @@ func (game *GameImp) move(move Move) {
 	dest := move.dest.toIPosn()
 
 	// update board
-	piece := *game.at(src)
-	*game.at(dest) = piece
+	piece := game.at(src)
+	game.setSquare(dest, piece)
 	piece.updatePosn(dest)
-	*game.at(src) = nil
+	game.setSquare(src, nil)
 
 	game.activePlayer = 3 - game.activePlayer // switch players
 }

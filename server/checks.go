@@ -22,10 +22,16 @@ func kingUnderCheck(board Board, player int) bool {
 
 func calcChecksFromBoard(board Board, player int) (checks ChecksBoard) {
 	threats := make([]IPosn, 0)
-	for i := 0; i < len(board); i++ {
-		for j := 0; j < len(board[0]); j++ {
-			if board[i][j] != nil && board[i][j].pieceInfo().player != player {
-				threats = append(threats, board[i][j].threats(board)...)
+	for i := 0; i < BoardSize; i++ {
+		for j := 0; j < BoardSize; j++ {
+			posn := IPosn{i, j}
+			if board.squareIsEmpty(posn) {
+				continue
+			}
+
+			piece := board.at(posn)
+			if piece.pieceInfo().player != player {
+				threats = append(threats, piece.threats(board)...)
 			}
 		}
 	}
