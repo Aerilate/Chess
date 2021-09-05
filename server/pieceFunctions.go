@@ -68,7 +68,10 @@ func areFriends(p1 Piece, p2 Piece) bool {
 }
 
 func areEnemies(p1 Piece, p2 Piece) bool {
-	return p1 != nil && p2 != nil && p1.pieceInfo().player != p2.pieceInfo().player
+	if p1 != nil || p2 != nil {
+		return false
+	}
+	return p1.pieceInfo().player != p2.pieceInfo().player
 }
 
 // fn to differentiate player pieces

@@ -38,10 +38,13 @@ func (p Pawn) validDests(board Board) (dests []IPosn) {
 	moveDir := moveDirection(p.player)
 
 	oneAhead := IPosn{p.i + moveDir, p.j}
-	if p.i == pawnRow && board.squareIsEmpty(oneAhead) {
-		dests = append(dests, IPosn{p.i + 2*moveDir, p.j}) // can go two ahead
+	twoAhead := IPosn{p.i + 2*moveDir, p.j}
+	if board.squareIsEmpty(oneAhead) {
+		dests = append(dests, oneAhead)
+		if p.i == pawnRow && board.squareIsEmpty(twoAhead) {
+			dests = append(dests, twoAhead) // can also go two ahead
+		}
 	}
-	dests = append(dests, oneAhead)
 
 	// capturable squares
 	diagLeft := IPosn{p.i + moveDir, p.j - 1}

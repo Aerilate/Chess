@@ -15,7 +15,7 @@ func kingUnderCheck(board Board, player int) bool {
 		}
 	}
 	checks := calcChecksFromBoard(board, player)
-	return !checks.squareIsSafe(kingPosn)
+	return checks[kingPosn.i][kingPosn.j] > 0
 }
 
 func calcChecksFromBoard(board Board, player int) (checks ChecksBoard) {
@@ -40,10 +40,6 @@ func calcChecksFromBoard(board Board, player int) (checks ChecksBoard) {
 		}
 	}
 	return checks
-}
-
-func (b *ChecksBoard) squareIsSafe(p IPosn) bool {
-	return (*b)[p.i][p.j] == 0
 }
 
 func (b ChecksBoard) String() string {
