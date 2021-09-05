@@ -13,7 +13,7 @@ type Piece interface {
 	threats(board Board) (threats []IPosn)
 	validDests(board Board) (dests []IPosn)
 	pieceInfo() PieceInfo
-	updatePosn(posn IPosn)
+	copy(info PieceInfo) Piece
 	String() string
 }
 

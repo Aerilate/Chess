@@ -8,8 +8,8 @@ func (p Bishop) pieceInfo() PieceInfo {
 	return p.PieceInfo
 }
 
-func (p Bishop) updatePosn(posn IPosn) {
-	p.PieceInfo.IPosn = posn
+func (p Bishop) copy(info PieceInfo) Piece {
+	return Bishop{info}
 }
 
 func (p Bishop) String() string {

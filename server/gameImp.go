@@ -78,7 +78,6 @@ func (game *GameImp) Move(move Move) {
 	// update board
 	piece := game.at(src)
 	game.setSquare(dest, piece)
-	piece.updatePosn(dest)
 	game.setSquare(src, nil)
 
 	game.activePlayer = 3 - game.activePlayer // switch players

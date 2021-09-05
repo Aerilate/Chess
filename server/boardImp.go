@@ -17,10 +17,12 @@ func (b BoardImp) squareIsEmpty(p IPosn) bool {
 }
 
 func (b *BoardImp) setSquare(dest IPosn, piece Piece) {
-	(*b)[dest.i][dest.j] = piece
-	if piece != nil {
-		(*b)[dest.i][dest.j].updatePosn(dest)
+	if piece == nil {
+		(*b)[dest.i][dest.j] = nil
+		return
 	}
+	info := PieceInfo{player: piece.pieceInfo().player, IPosn: dest}
+	(*b)[dest.i][dest.j] = piece.copy(info)
 }
 
 func (b BoardImp) pieces() (pieces []Piece) {

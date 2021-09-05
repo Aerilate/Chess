@@ -8,8 +8,8 @@ func (p Rook) pieceInfo() PieceInfo {
 	return p.PieceInfo
 }
 
-func (p Rook) updatePosn(posn IPosn) {
-	p.PieceInfo.IPosn = posn
+func (p Rook) copy(info PieceInfo) Piece {
+	return Rook{info}
 }
 
 func (p Rook) String() string {

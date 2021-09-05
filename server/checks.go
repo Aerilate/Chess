@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-type ChecksBoard [][]uint
+type ChecksBoard [BoardSize][BoardSize]uint
 
 func kingUnderCheck(board Board, player int) bool {
 	kingPosn := IPosn{}
