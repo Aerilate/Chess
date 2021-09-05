@@ -16,10 +16,13 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+type CheckMessage struct {
+	Check string `json:"check"`
+}
+
 type Message struct {
 	ValidMoves map[string][]string `json:"validMoves"`
 	Fen        string              `json:"fen"`
-	Check      string              `json:"check"`
 }
 
 func startGame() {
@@ -35,7 +38,7 @@ func startGame() {
 	game := NewGame()
 	for !game.IsOver() {
 		activePlayer := clients.getConn(game.ActivePlayer())
-		msg := Message{ValidMoves: game.ValidMoves(), Fen: game.Fen(), Check: string(game.Checked())}
+		msg := Message{ValidMoves: game.ValidMoves(), Fen: game.Fen()}
 		jsonMsg, err := json.MarshalIndent(msg, "", "  ")
 		if err != nil {
 			log.Println(err)
@@ -58,6 +61,13 @@ func startGame() {
 		move := Move{src, dest}
 		fmt.Println(src, dest)
 		game.Move(move)
+
+		checkMsg := CheckMessage{string(game.Checked())}
+		jsonMsg, err = json.MarshalIndent(checkMsg, "", "  ")
+		err = clients.broadCast(jsonMsg)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
 

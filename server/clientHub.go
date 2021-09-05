@@ -1,6 +1,9 @@
 package main
 
-import "github.com/gorilla/websocket"
+import (
+	"fmt"
+	"github.com/gorilla/websocket"
+)
 
 type ClientHub [3]*websocket.Conn
 
@@ -21,4 +24,17 @@ func (c *ClientHub) getConn(p Player) *websocket.Conn {
 		return c[1]
 	}
 	return c[2]
+}
+
+func (c *ClientHub) broadCast(message []byte) (err error) {
+	if c[1] == nil || c[2] == nil {
+		return fmt.Errorf("player not found")
+	}
+	if err = c[1].WriteMessage(1, message); err != nil {
+		return err
+	}
+	if err = c[2].WriteMessage(1, message); err != nil {
+		return err
+	}
+	return nil
 }
