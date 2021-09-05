@@ -11,7 +11,7 @@ func iterThreats(srcPiece Piece, board Board, incs []IPosn) (threats []IPosn) {
 		curr.add(inc) // exclude piece position itself
 		for moveInBounds(curr) {
 			threats = append(threats, curr)
-			if !board.squareIsEmpty(curr) { // piece at edge of threat
+			if !board.squareIsEmpty(curr) { // piece at end of line of sight
 				break
 			}
 			curr.add(inc)
@@ -26,12 +26,12 @@ func iterMoves(srcPiece Piece, board Board, incs []IPosn) (dests []IPosn) {
 		dest.add(inc) // exclude piece position itself
 		for moveInBounds(dest) {
 			if areFriends(board.at(dest), srcPiece) {
-				break // line of sight ends
+				break // line of sight excludes dest
 			}
 
-			dests = append(dests, dest) // can move to dest
-			if board.squareIsEmpty(dest) || areEnemies(board.at(dest), srcPiece) {
-				break // can't move past enemy piece
+			dests = append(dests, dest)
+			if areEnemies(board.at(dest), srcPiece) {
+				break // line of sight includes dest but ends
 			}
 			dest.add(inc)
 		}
