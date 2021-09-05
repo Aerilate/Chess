@@ -27,12 +27,11 @@ func iterMoves(srcPiece Piece, board Board, incs []IPosn) (dests []IPosn) {
 		for moveInBounds(dest) {
 			if areFriends(board.at(dest), srcPiece) {
 				break // line of sight excludes dest
-			}
-
-			dests = append(dests, dest)
-			if areEnemies(board.at(dest), srcPiece) {
+			} else if areEnemies(board.at(dest), srcPiece) {
+				dests = append(dests, dest)
 				break // line of sight includes dest but ends
 			}
+			dests = append(dests, dest)
 			dest.add(inc)
 		}
 	}
@@ -68,7 +67,7 @@ func areFriends(p1 Piece, p2 Piece) bool {
 }
 
 func areEnemies(p1 Piece, p2 Piece) bool {
-	if p1 != nil || p2 != nil {
+	if p1 == nil || p2 == nil {
 		return false
 	}
 	return p1.pieceInfo().player != p2.pieceInfo().player

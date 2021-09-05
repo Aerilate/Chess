@@ -64,7 +64,7 @@ func startGame() {
 
 		checkMsg := CheckMessage{string(game.Checked())}
 		jsonMsg, err = json.MarshalIndent(checkMsg, "", "  ")
-		err = clients.broadCast(jsonMsg)
+		err = clients.broadcast(jsonMsg)
 		if err != nil {
 			log.Println(err)
 		}

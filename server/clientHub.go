@@ -26,7 +26,7 @@ func (c *ClientHub) getConn(p Player) *websocket.Conn {
 	return c[2]
 }
 
-func (c *ClientHub) broadCast(message []byte) (err error) {
+func (c *ClientHub) broadcast(message []byte) (err error) {
 	if c[1] == nil || c[2] == nil {
 		return fmt.Errorf("player not found")
 	}
