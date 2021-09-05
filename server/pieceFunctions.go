@@ -75,7 +75,7 @@ func areEnemies(p1 Piece, p2 Piece) bool {
 }
 
 // fn to differentiate player pieces
-func diffPlayerPiece(s string, player int) string {
+func diffPlayerPiece(s string, player Player) string {
 	if player == Player1 {
 		return strings.ToUpper(s)
 	}

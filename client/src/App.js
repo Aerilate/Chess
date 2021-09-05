@@ -4,6 +4,10 @@ import Chessground from 'react-chessground'
 import 'react-chessground/dist/styles/chessground.css'
 
 const TIMEOUT = 250;
+const Player = {
+  "w": "white",
+  "b": "black"
+}
 
 export default class App extends React.Component {
   constructor(props) {
@@ -57,7 +61,7 @@ export default class App extends React.Component {
       );
 
       that.timeout = that.timeout + that.timeout; //increment retry interval
-      connectInterval = setTimeout(this.check, Math.min(10000, that.timeout)); //call check function after timeout
+      connectInterval = setTimeout(this.checkConn, Math.min(10000, that.timeout)); //call check function after timeout
     };
 
     // websocket onerror event listener
@@ -71,7 +75,7 @@ export default class App extends React.Component {
     };
   };
 
-  check = () => {
+  checkConn = () => {
     const { ws } = this.state;
     if (!ws || ws.readyState === WebSocket.CLOSED) this.connect();
   };
@@ -102,6 +106,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    return <Chessground onMove={this.onMove} movable={this.calcMovable()} fen={this.state.serverData?.fen}/>;
+    return <Chessground onMove={this.onMove} movable={this.calcMovable()} fen={this.state.serverData?.fen} check={Player[this.state.serverData?.check]}/>;
   }
 }

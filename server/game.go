@@ -3,7 +3,8 @@ package main
 type Game interface {
 	ValidMoves() map[string][]string
 	Move(move Move)
-	ActivePlayer() int
+	ActivePlayer() Player
+	Checked() Player
 	IsOver() bool
 	Fen() string
 }

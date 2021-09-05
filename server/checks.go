@@ -4,7 +4,7 @@ import "fmt"
 
 type ChecksBoard [BoardSize][BoardSize]uint
 
-func kingUnderCheck(board Board, player int) bool {
+func kingUnderCheck(board Board, player Player) bool {
 	kingPosn := IPosn{}
 	for _, piece := range board.pieces() {
 		if piece.pieceInfo().player != player {
@@ -18,7 +18,7 @@ func kingUnderCheck(board Board, player int) bool {
 	return checks[kingPosn.i][kingPosn.j] > 0
 }
 
-func calcChecksFromBoard(board Board, player int) (checks ChecksBoard) {
+func calcChecksFromBoard(board Board, player Player) (checks ChecksBoard) {
 	threats := make([]IPosn, 0)
 	for i := 0; i < BoardSize; i++ {
 		for j := 0; j < BoardSize; j++ {

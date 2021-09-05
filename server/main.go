@@ -19,6 +19,7 @@ var upgrader = websocket.Upgrader{
 type Message struct {
 	ValidMoves map[string][]string `json:"validMoves"`
 	Fen        string              `json:"fen"`
+	Check      string              `json:"check"`
 }
 
 func startGame() {
@@ -33,8 +34,8 @@ func startGame() {
 
 	game := NewGame()
 	for !game.IsOver() {
-		activePlayer := clients[game.ActivePlayer()]
-		msg := Message{game.ValidMoves(), game.Fen()}
+		activePlayer := clients.getConn(game.ActivePlayer())
+		msg := Message{ValidMoves: game.ValidMoves(), Fen: game.Fen(), Check: string(game.Checked())}
 		jsonMsg, err := json.MarshalIndent(msg, "", "  ")
 		if err != nil {
 			log.Println(err)

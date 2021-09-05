@@ -15,3 +15,10 @@ func (c *ClientHub) push(conn *websocket.Conn) {
 func (c *ClientHub) isFull() bool {
 	return c[1] != nil && c[2] != nil
 }
+
+func (c *ClientHub) getConn(p Player) *websocket.Conn {
+	if p == Player1 {
+		return c[1]
+	}
+	return c[2]
+}

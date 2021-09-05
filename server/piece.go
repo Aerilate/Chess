@@ -18,7 +18,7 @@ type Piece interface {
 }
 
 type PieceInfo struct {
-	player int
+	player Player
 	IPosn
 }
 

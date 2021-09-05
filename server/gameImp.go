@@ -1,11 +1,13 @@
 package main
 
-const Player1 = 1
-const Player2 = 2
+type Player = rune
+
+const Player1 = 'w'
+const Player2 = 'b'
 
 type GameImp struct {
 	Board
-	activePlayer int
+	activePlayer Player
 	gameOver     bool
 }
 
@@ -80,11 +82,23 @@ func (game *GameImp) Move(move Move) {
 	game.setSquare(dest, piece)
 	game.setSquare(src, nil)
 
-	game.activePlayer = 3 - game.activePlayer // switch players
+	game.activePlayer = Player1 + Player2 - game.activePlayer // switch players
 }
 
-func (game GameImp) ActivePlayer() int {
+func (game *GameImp) ActivePlayer() Player {
 	return game.activePlayer
+}
+
+func (game *GameImp) Checked() (p Player) {
+	switch {
+	case kingUnderCheck(game.Board, game.activePlayer):
+		p = game.activePlayer
+	case kingUnderCheck(game.Board, Player1+Player2-game.activePlayer):
+		p = Player1 + Player2 - game.activePlayer
+	default:
+		p = ' '
+	}
+	return p
 }
 
 func (game *GameImp) IsOver() bool {

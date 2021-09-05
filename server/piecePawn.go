@@ -21,16 +21,18 @@ func (p Pawn) threats(board Board) (threats []IPosn) {
 	return []IPosn{{p.i + moveDir, p.j - 1}, {p.i + moveDir, p.j + 1}}
 }
 
-func pawnHomeRow(player int) int {
+func pawnHomeRow(player Player) int {
 	if player == Player1 {
 		return 6
 	}
 	return 1
 }
 
-// maps 1->-1 and 2->1
-func moveDirection(player int) int {
-	return player*2 - 3
+func moveDirection(player Player) int {
+	if player == Player1 {
+		return -1
+	}
+	return 1
 }
 
 func (p Pawn) validDests(board Board) (dests []IPosn) {
