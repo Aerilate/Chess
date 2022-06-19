@@ -7,6 +7,7 @@ type Game interface {
 	Checked() Player
 	IsOver() bool
 	Fen() string
+	String() string
 }
 
 type Move struct {

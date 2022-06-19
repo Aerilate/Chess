@@ -108,3 +108,7 @@ func (game *GameImp) IsOver() bool {
 func (game *GameImp) Fen() (s string) {
 	return game.Board.fen()
 }
+
+func (game *GameImp) string {
+
+}

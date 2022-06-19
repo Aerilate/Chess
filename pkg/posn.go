@@ -17,7 +17,7 @@ func (p *IPosn) add(other IPosn) {
 
 func (p IPosn) toStdPosn() StdPosn {
 	file := p.j + 'a'
-	rank := BoardSize - p.i
+	rank := main.BoardSize - p.i
 	return StdPosn{rune(file), rank}
 }
 
@@ -32,7 +32,7 @@ type StdPosn struct {
 }
 
 func (p StdPosn) toIPosn() IPosn {
-	i := BoardSize - p.rank
+	i := main.BoardSize - p.rank
 	j := p.file - 'a'
 	return IPosn{i, int(j)}
 }
